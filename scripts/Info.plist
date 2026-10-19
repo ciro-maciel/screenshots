@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>pt-BR</string>
+    <key>CFBundleExecutable</key>
+    <string>Screenshots</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIdentifier</key>
+    <string>click.ciromaciel.screenshots</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>Screenshots</string>
+    <key>CFBundleDisplayName</key>
+    <string>Screenshots</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>__VERSION__</string>
+    <key>CFBundleVersion</key>
+    <string>__VERSION__</string>
+    <key>LSUIElement</key>
+    <true/>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.productivity</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSHumanReadableCopyright</key>
+    <string>Ciro Cesar Maciel</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>O Screenshots grava a sua voz junto com a tela quando você liga o microfone na gravação.</string>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>O Screenshots esconde os ícones da mesa durante as capturas.</string>
+</dict>
+</plist>

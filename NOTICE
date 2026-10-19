@@ -1,0 +1,21 @@
+Screenshots
+Copyright (c) 2026 Ciro Cesar Maciel. Licensed under the MIT License (LICENSE).
+
+This repository includes third-party material under its own license:
+
+- Montserrat (Resources/Fonts), by the Montserrat Project Authors.
+  SIL Open Font License 1.1: Resources/Fonts/OFL.txt.
+  https://github.com/JulietaUla/Montserrat
+
+- Tabler Icons (Resources/Icons), by Paweł Kuna.
+  MIT License. https://github.com/tabler/tabler-icons
+
+- The app icon (Resources/AppIcon.icns, Resources/AppIcon.png) and the menu bar glyph
+  (Resources/Icons/menubar.pdf) are the letter S set in Candal, by Vernon Adams.
+  SIL Open Font License 1.1. https://fonts.google.com/specimen/Candal
+
+- The name "Screenshots by Ciro Cesar Maciel" and the author line in the app are the maker's
+  mark and are not covered by the MIT License. A fork that ships its own build should use its
+  own name.
+
+CleanShot X is a trademark of its owners. This project is not affiliated with or endorsed by them.
