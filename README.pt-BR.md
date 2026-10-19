@@ -2,6 +2,8 @@
 
 **Um app aberto de captura e gravação de tela para Mac, no espírito do CleanShot X.**
 
+Um dos [seis apps de Mac grátis e de código aberto](#mais-de-ciro-cesar-maciel) de [Ciro Cesar Maciel](https://ciromaciel.click/?ref=oss-screenshots).
+
 Capture uma área, uma janela, a tela inteira ou uma página longa com rolagem, tire o texto de uma imagem, grave a tela em MP4 ou GIF e depois anote, fixe na tela ou arraste o resultado para outro app. Ele mora na barra de menus e tudo fica no seu Mac: o app não tem código de rede. App nativo em Swift para macOS 14 ou mais novo, em Apple Silicon.
 
 [English](README.md)
@@ -91,6 +93,21 @@ Issues e pull requests são bem-vindos. Veja o [CONTRIBUTING.md](CONTRIBUTING.md
 
 ---
 
-Feito por [Ciro Cesar Maciel](https://ciromaciel.click/?ref=oss-screenshots). Eu construo ferramentas e mostro como usar: mais [ferramentas grátis](https://ciromaciel.click/tools?ref=oss-screenshots) e [apps de Mac](https://ciromaciel.click/tools/screenshots?ref=oss-screenshots).
+## Mais de Ciro Cesar Maciel
 
-**Quer o próximo?** [Siga @ciro-maciel](https://github.com/ciro-maciel) para as próximas ferramentas abertas, e clique em **Watch → Custom → Releases** aqui em cima para saber de cada versão nova.
+Eu construo software sozinho, com uma equipe de agentes de IA, e abro o que dá para abrir. São seis apps nativos para Mac, todos grátis, MIT, assinados e notarizados pela Apple, em inglês e português do Brasil:
+
+| App | O que faz |
+| --- | --- |
+| [Cleaner](https://github.com/ciro-maciel/cleaner) | O limpador de Mac que mostra tudo antes de apagar qualquer coisa |
+| [Screenshots](https://github.com/ciro-maciel/screenshots) | Captura, anotação e gravação de tela, sem nada sair do Mac · **este** |
+| [Speech to Text](https://github.com/ciro-maciel/speech-to-text) | Ditado por atalho, com o Whisper rodando no Mac |
+| [Assistant](https://github.com/ciro-maciel/voice-assistant) | O Claude Code por voz: chame pelo nome, peça, ouça a resposta |
+| [Windows](https://github.com/ciro-maciel/windows) | Janelas no lugar com um atalho ou levando até a borda |
+| [Text to Speech](https://github.com/ciro-maciel/text-to-speech) | Selecione um texto em qualquer app e ouça |
+
+Além dos apps: [ferramentas grátis no navegador](https://ciromaciel.click/tools?ref=oss-screenshots), [livros](https://ciromaciel.click/books?ref=oss-screenshots) e o [Infrastructure](https://myinfrastructure.click/?ref=oss-screenshots), a infraestrutura que os agentes já sabem operar.
+
+**Toda semana, por e-mail:** as [Cartas do Ciro](https://ciromaciel.click/?ref=oss-screenshots), o que estou construindo e aprendendo.
+
+**Acompanhe.** [Siga @ciro-maciel](https://github.com/ciro-maciel) para os próximos apps abertos, clique em **Watch → Custom → Releases** aqui em cima para saber de cada versão nova, e veja como tudo é feito no [YouTube](https://www.youtube.com/@ciro-maciel).
