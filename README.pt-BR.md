@@ -6,7 +6,7 @@ Capture uma área, uma janela, a tela inteira ou uma página longa com rolagem, 
 
 [English](README.md)
 
-![O editor de anotação: seta, texto, contadores, elipse, marca-texto e desfoque sobre um relatório de exemplo](docs/editor.webp)
+![O editor de anotação: seta, texto, contadores, elipse, marca-texto e desfoque sobre um relatório de exemplo](docs/editor.pt-BR.webp)
 
 ## Instalar
 
@@ -40,7 +40,7 @@ Na primeira vez, ligue o Screenshots em **Ajustes do Sistema → Privacidade e S
 
 Todo atalho muda nos Ajustes. Eles são registrados pelo `RegisterEventHotKey` do Carbon, então não pedem Acessibilidade.
 
-![Ajustes: os atalhos, cada um gravado a partir de uma tecla](docs/settings.webp)
+![Ajustes: os atalhos, cada um gravado a partir de uma tecla](docs/settings.pt-BR.webp)
 
 ## Como é feito
 
@@ -78,7 +78,7 @@ Rode de um terminal que já tenha Gravação de Tela. Nunca rode o `--e2e` diret
 ## Limites
 
 - Só Apple Silicon e macOS 14 ou mais novo. Gravar o microfone pede macOS 15.
-- A interface está em português por enquanto.
+- A interface está em inglês e em português do Brasil, conforme o idioma do Mac.
 - Sem envio para a nuvem nem link de compartilhamento, sem câmera na gravação, sem cortar vídeo e sem modo escuro.
 
 ## Contribuir

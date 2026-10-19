@@ -17,12 +17,12 @@ struct HistoryView: View {
 
     var body: some View {
         MacPage {
-            MacPageHeader(crumb: "Screenshots", title: "Histórico", subtitle: subtitle)
+            MacPageHeader(crumb: "Screenshots", title: L("History"), subtitle: subtitle)
             if library.items.isEmpty {
                 VStack(spacing: 16) {
                     Illustration(name: "camera", size: 168)
-                    Text("Nada por aqui ainda").zenLabel(11, color: Zen.gray5)
-                    Text("Aperte ⌥⇧⌘4 e arraste uma área. Cada captura aparece aqui.")
+                    Text(L("Nothing here yet")).zenLabel(11, color: Zen.gray5)
+                    Text(L("Press ⌥⇧⌘4 and drag over an area. Every capture shows up here."))
                         .zenBody(14).multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
@@ -37,8 +37,9 @@ struct HistoryView: View {
 
     private var subtitle: String {
         let d = Prefs.shared.historyDays
-        let span = d < 0 ? "sem prazo" : (d == 0 ? "até o app fechar" : (d == 1 ? "por 1 dia" : "por \(d) dias"))
-        return "\(library.items.count) \(library.items.count == 1 ? "captura" : "capturas"), guardadas \(span). Ficam só neste Mac."
+        let span = d < 0 ? L("with no time limit") : (d == 0 ? L("until the app quits") : (d == 1 ? L("for 1 day") : L("for %d days", d)))
+        let n = library.items.count
+        return L("%@, kept %@. They stay on this Mac only.", n == 1 ? L("1 capture") : L("%d captures", n), span)
     }
 }
 
@@ -56,20 +57,20 @@ struct HistoryCard: View {
                 if hover {
                     Zen.gray9.opacity(0.55)
                     HStack(spacing: 6) {
-                        action(capture.isImage ? "pencil" : "external-link", capture.isImage ? "Anotar" : "Abrir") {
+                        action(capture.isImage ? "pencil" : "external-link", capture.isImage ? L("Annotate") : L("Open")) {
                             if capture.isImage { EditorWindow.show(capture: capture) }
                             else { NSWorkspace.shared.open(Library.shared.url(capture)) }
                         }
-                        action("copy", "Copiar") { Library.shared.copy(capture); HUD.shared.toast("Copiada") }
+                        action("copy", L("Copy")) { Library.shared.copy(capture); HUD.shared.toast(L("Copied")) }
                         if capture.isImage {
-                            action("pin", "Fixar na tela") {
+                            action("pin", L("Pin to screen")) {
                                 if let img = Library.shared.image(capture) { PinWindow.show(image: img, scale: CGFloat(capture.scale)) }
                             }
                         }
-                        action("folder", "Mostrar no Finder") {
+                        action("folder", L("Show in Finder")) {
                             NSWorkspace.shared.activateFileViewerSelecting([capture.savedPath.map { URL(fileURLWithPath: $0) } ?? Library.shared.url(capture)])
                         }
-                        action("trash", "Tirar do histórico") { Library.shared.delete(capture) }
+                        action("trash", L("Remove from History")) { Library.shared.delete(capture) }
                     }
                 }
             }
@@ -80,9 +81,9 @@ struct HistoryCard: View {
                 NSItemProvider(contentsOf: capture.savedPath.map { URL(fileURLWithPath: $0) } ?? Library.shared.url(capture)) ?? NSItemProvider()
             }
             VStack(alignment: .leading, spacing: 3) {
-                Text(capture.source + (capture.kind == .image ? "" : (capture.kind == .gif ? " · GIF" : " · Vídeo")))
+                Text(capture.sourceTitle + (capture.kind == .image ? "" : (capture.kind == .gif ? " · GIF" : " · " + L("Video"))))
                     .font(Zen.font(13, .bold)).foregroundStyle(Zen.gray9)
-                Text("\(capture.date.formatted(.relative(presentation: .named)))  ·  \(capture.width) × \(capture.height)")
+                Text("\(capture.date.formatted(.relative(presentation: .named).locale(L10n.locale)))  ·  \(capture.width) × \(capture.height)")
                     .zenData(12, color: Zen.gray5)
             }
             .padding(.horizontal, 14)

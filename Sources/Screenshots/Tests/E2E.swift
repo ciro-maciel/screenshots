@@ -57,6 +57,7 @@ enum E2E {
             return 2
         }
 
+        testLocalization()
         await testStitcherSynthetic()
         await testPrefsAndHotkeys()
         await testRealCapture()
@@ -234,6 +235,27 @@ enum E2E {
     }
 
     // MARK: 1. stitcher
+
+    /// Both tables carry every key, the interface follows the Mac's first language, and
+    /// histories written with Portuguese source labels still read in the interface language.
+    static func testLocalization() {
+        section("Idiomas (inglês e português do Brasil)")
+        func keys(_ lang: String) -> Set<String> {
+            guard let url = Bundle.main.url(forResource: "Localizable", withExtension: "strings", subdirectory: nil, localization: lang),
+                  let d = NSDictionary(contentsOf: url) as? [String: String] else { return [] }
+            return Set(d.keys)
+        }
+        let en = keys("en"), pt = keys("pt-BR")
+        check(!en.isEmpty && en == pt, "as duas tabelas têm as mesmas chaves (\(en.count))",
+              "só em en: \(en.subtracting(pt).sorted()), só em pt-BR: \(pt.subtracting(en).sorted())")
+        let first = Locale.preferredLanguages.first ?? "en"
+        check(L10n.isPortuguese == first.lowercased().hasPrefix("pt"), "segue o primeiro idioma do Mac (\(first))")
+        let expected = L10n.isPortuguese ? "Janela" : "Window"
+        let legacy = Capture(id: UUID(), date: Date(), kind: .image, file: "", savedPath: nil, width: 1, height: 1, scale: 1, source: "Janela")
+        var current = legacy; current.source = "window"
+        check(legacy.sourceTitle == expected && current.sourceTitle == expected, "origem antiga e nova no idioma da interface")
+        check(L("settings|Thin") == (L10n.isPortuguese ? "Fina" : "Thin"), "chave com contexto mostra o texto, nunca a chave")
+    }
 
     static func testStitcherSynthetic() async {
         section("Costura da captura com rolagem (quadros sintéticos)")
@@ -432,7 +454,7 @@ enum E2E {
         let saved = c.savedPath.map { URL(fileURLWithPath: $0) }
         check(saved.map { FileManager.default.fileExists(atPath: $0.path) } ?? false, "arquivo salvo na pasta escolhida")
         if let saved {
-            check(saved.lastPathComponent.hasPrefix("Captura ") && saved.pathExtension == "png", "nome no padrão (\(saved.lastPathComponent))")
+            check(saved.lastPathComponent.hasPrefix(L("Screenshot") + " ") && saved.pathExtension == "png", "nome no padrão (\(saved.lastPathComponent))")
             if let src = CGImageSourceCreateWithURL(saved as CFURL, nil),
                let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any] {
                 check((props[kCGImagePropertyDPIWidth] as? Double ?? 0) == 72 * Double(screen.backingScaleFactor), "PNG marcado como Retina (\(Int(72 * screen.backingScaleFactor)) dpi)")
@@ -483,7 +505,7 @@ enum E2E {
 
         await front()
         await CaptureController.shared.perform(.previousArea)
-        check(CaptureController.shared.last?.source == "Área" && CaptureController.shared.last?.width == c.width, "repetir a área anterior")
+        check(CaptureController.shared.last?.source == "area" && CaptureController.shared.last?.width == c.width, "repetir a área anterior")
         QuickAccess.shared.closeAll()
     }
 
@@ -498,7 +520,7 @@ enum E2E {
             mouse(.leftMouseDown, c, in: o); mouse(.leftMouseUp, c, in: o)
         }, at: c)
         let frame = quadWindow.frame
-        if let last = CaptureController.shared.last, last.source == "Janela" {
+        if let last = CaptureController.shared.last, last.source == "window" {
             check(abs(last.width - Int(frame.width * scale)) <= 2 && abs(last.height - Int(frame.height * scale)) <= 2,
                   "só a janela, sem sombra, no tamanho dela", "\(last.width)×\(last.height) vs \(frame.width * scale)×\(frame.height * scale)")
             save(Library.shared.image(last), "6-window.png")
@@ -754,7 +776,7 @@ enum E2E {
         let url = w.saveImage()
         check(url.map { FileManager.default.fileExists(atPath: $0.path) } ?? false, "Salvar grava na pasta")
         if let id = m.captureID, let c = Library.shared.item(id) {
-            check(c.width == 880 && c.source == "Editor", "imagem anotada entra no histórico")
+            check(c.width == 880 && c.source == "editor", "imagem anotada entra no histórico")
         }
         check(w.dragFile().map { FileManager.default.fileExists(atPath: $0.path) } ?? false, "Arrastar gera o arquivo")
         w.pinImage()
@@ -849,9 +871,9 @@ enum E2E {
             check(Int(size.width) == Int(rect.width * scale) / 2 * 2 && Int(size.height) == Int(rect.height * scale) / 2 * 2,
                   "vídeo no tamanho da área em Retina", "\(size)")
             check(session.frames > 20, "quadros gravados (\(session.frames))")
-            if let c = await Library.shared.add(movie: url, gif: false, source: "Gravação") {
+            if let c = await Library.shared.add(movie: url, gif: false, source: "recording") {
                 check(c.kind == .video && Library.shared.thumbnail(c) != nil, "vídeo entra no histórico com miniatura")
-                check(Library.shared.save(c).map { $0.lastPathComponent.hasPrefix("Gravação ") && $0.pathExtension == "mp4" } ?? false, "salva como \"Gravação … .mp4\"")
+                check(Library.shared.save(c).map { $0.lastPathComponent.hasPrefix(L("Recording") + " ") && $0.pathExtension == "mp4" } ?? false, "salva como \"Gravação … .mp4\"")
             }
         }
 
@@ -886,7 +908,7 @@ enum E2E {
         let b = CGPoint(x: quadRect.minX + 110, y: quadRect.maxY - 110)
         let t0 = Date()
         await withOverlay({ await CaptureController.shared.perform(.timer) }, drive: { o in drag(from: a, to: b, in: o) }, at: a)
-        check(CaptureController.shared.last?.source == "Timer" && Date().timeIntervalSince(t0) >= 1, "timer espera e captura a área")
+        check(CaptureController.shared.last?.source == "timer" && Date().timeIntervalSince(t0) >= 1, "timer espera e captura a área")
         let before = CaptureController.shared.last?.id
         await CaptureController.shared.perform(.fullscreen)
         let s = Geometry.mouseScreen ?? screen

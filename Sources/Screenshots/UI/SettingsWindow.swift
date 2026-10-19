@@ -7,14 +7,14 @@ enum SettingsTab: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .general: return "Geral"
-        case .background: return "Fundo"
-        case .shortcuts: return "Atalhos"
-        case .quickAccess: return "Acesso rápido"
-        case .recording: return "Gravação"
-        case .screenshots: return "Capturas"
-        case .annotate: return "Anotação"
-        case .advanced: return "Avançado"
+        case .general: return L("General")
+        case .background: return L("Background")
+        case .shortcuts: return L("Shortcuts")
+        case .quickAccess: return L("Quick Access")
+        case .recording: return L("Recording")
+        case .screenshots: return L("tab|Screenshots")
+        case .annotate: return L("Annotation")
+        case .advanced: return L("Advanced")
         }
     }
     var icon: String {
@@ -31,14 +31,14 @@ enum SettingsTab: String, CaseIterable, Identifiable {
     }
     var subtitle: String {
         switch self {
-        case .general: return "O que acontece ao ligar o Mac e logo depois de cada captura, e a pasta onde os arquivos ficam."
-        case .background: return "Um fundo atrás das capturas de janela, para mandar a imagem já pronta."
-        case .shortcuts: return "Os atalhos que valem em qualquer app, do jeito que você preferir."
-        case .quickAccess: return "A miniatura que aparece no canto depois de capturar."
-        case .recording: return "Formato, qualidade e o que entra na gravação da tela."
-        case .screenshots: return "O arquivo de cada captura e como a seleção de área se comporta."
-        case .annotate: return "Cor e espessura com que o editor abre, e os atalhos dele."
-        case .advanced: return "Nome dos arquivos, quanto tempo o histórico guarda e a volta ao padrão."
+        case .general: return L("What happens when your Mac starts up and right after each capture, and the folder where the files go.")
+        case .background: return L("A background behind window captures, so the image is ready to send.")
+        case .shortcuts: return L("Shortcuts that work in any app, set the way you like.")
+        case .quickAccess: return L("The thumbnail that appears in the corner after a capture.")
+        case .recording: return L("Format, quality and what goes into a screen recording.")
+        case .screenshots: return L("The file each capture makes and how area selection behaves.")
+        case .annotate: return L("The color and stroke the editor opens with, and its shortcuts.")
+        case .advanced: return L("File names, how long the history keeps captures, and going back to the defaults.")
         }
     }
 }
@@ -103,18 +103,18 @@ struct SettingsView: View {
     var body: some View {
         MacShellView {
             MacSidebar(app: "Screenshots") {
-                MacSidebarGroup(title: "Capturas") {
-                    MacSidebarItem(icon: "history", title: "Histórico",
+                MacSidebarGroup(title: L("Captures")) {
+                    MacSidebarItem(icon: "history", title: L("History"),
                                    badge: library.items.isEmpty ? nil : "\(library.items.count)",
                                    active: model.section == .history) { model.section = .history }
                 }
-                MacSidebarGroup(title: "Ajustes") {
+                MacSidebarGroup(title: L("Settings")) {
                     ForEach(SettingsTab.allCases) { t in
                         MacSidebarItem(icon: t.icon, title: t.title, active: model.section == .settings && model.tab == t) { model.tab = t }
                     }
                 }
             } status: {
-                MacStatusLine(on: ScreenGrabber.hasPermission, onText: "Gravação de Tela ligada", offText: "Gravação de Tela desligada") {
+                MacStatusLine(on: ScreenGrabber.hasPermission, onText: L("Screen Recording on"), offText: L("Screen Recording off")) {
                     WelcomeWindow.show()
                 }
             }
@@ -147,28 +147,28 @@ struct SettingsView: View {
 
     private var general: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingsSection(title: "Ao iniciar") {
-                ZenToggle(title: "Abrir o Screenshots ao entrar no Mac", detail: "Fica na barra de menus, pronto para o primeiro atalho.",
+            SettingsSection(title: L("Startup")) {
+                ZenToggle(title: L("Open Screenshots at login"), detail: L("It waits in the menu bar, ready for the first shortcut."),
                           isOn: Binding(get: { opensAtLogin }, set: { setOpensAtLogin($0) }))
-                ZenToggle(title: "Tocar o som de captura", isOn: $prefs.playSound)
+                ZenToggle(title: L("Play the capture sound"), isOn: $prefs.playSound)
             }
             .onAppear { opensAtLogin = SMAppService.mainApp.status == .enabled }
-            SettingsSection(title: "Depois de capturar") {
-                ZenToggle(title: "Mostrar o acesso rápido", detail: "A miniatura no canto, com copiar, salvar, anotar e fixar.", isOn: $prefs.afterShowQuickAccess)
-                ZenToggle(title: "Copiar a imagem", isOn: $prefs.afterCopy)
-                ZenToggle(title: "Salvar na pasta", isOn: $prefs.afterSave)
-                ZenToggle(title: "Abrir o editor de anotação", isOn: $prefs.afterOpenEditor)
-                ZenToggle(title: "Fixar na tela", isOn: $prefs.afterPin)
+            SettingsSection(title: L("After Capture")) {
+                ZenToggle(title: L("Show Quick Access"), detail: L("The thumbnail in the corner, with copy, save, annotate and pin."), isOn: $prefs.afterShowQuickAccess)
+                ZenToggle(title: L("Copy the image"), isOn: $prefs.afterCopy)
+                ZenToggle(title: L("Save to the folder"), isOn: $prefs.afterSave)
+                ZenToggle(title: L("Open the annotation editor"), isOn: $prefs.afterOpenEditor)
+                ZenToggle(title: L("Pin to screen"), isOn: $prefs.afterPin)
             }
-            SettingsSection(title: "Pasta") {
+            SettingsSection(title: L("Folder")) {
                 HStack(spacing: 12) {
                     Icon(name: "folder", size: 16, color: Zen.gray6)
                     Text(prefs.saveFolder.replacingOccurrences(of: NSHomeDirectory(), with: "~"))
                         .zenData(13, color: Zen.gray9).lineLimit(1).truncationMode(.middle)
                     Spacer()
-                    Button { chooseFolder() } label: { Text("Escolher") }
+                    Button { chooseFolder() } label: { Text(L("Choose")) }
                         .buttonStyle(ZenButtonStyle(kind: .secondary, height: 30))
-                    Button { NSWorkspace.shared.open(URL(fileURLWithPath: prefs.saveFolder)) } label: { Text("Abrir") }
+                    Button { NSWorkspace.shared.open(URL(fileURLWithPath: prefs.saveFolder)) } label: { Text(L("Open")) }
                         .buttonStyle(ZenButtonStyle(kind: .subtle, height: 30))
                 }
             }
@@ -177,17 +177,17 @@ struct SettingsView: View {
 
     private var background: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingsSection(title: "Capturas de janela", note: "O fundo entra só nas capturas de janela. No editor, qualquer imagem ganha fundo pelo botão Fundo.") {
+            SettingsSection(title: L("Window Captures"), note: L("The background goes on window captures only. In the editor, any image gets one from the Background button.")) {
                 ZenSegmented(options: Backdrop.Fill.allCases.map { ($0, $0.title) }, selection: $prefs.windowBackground)
                 HStack(spacing: 12) {
-                    Text("Margem").zenData(13, color: Zen.gray6)
+                    Text(L("Padding")).zenData(13, color: Zen.gray6)
                     Slider(value: Binding(get: { Double(prefs.backgroundPadding) }, set: { prefs.backgroundPadding = Int($0.rounded()) }), in: 8...200)
                         .frame(width: 260)
                         .disabled(prefs.windowBackground == .none)
                     Text("\(prefs.backgroundPadding) pt").zenData(13, color: Zen.gray7).monospacedDigit()
                 }
             }
-            SettingsSection(title: "Prévia") {
+            SettingsSection(title: L("Preview")) {
                 BackdropPreview(fill: prefs.windowBackground, padding: CGFloat(prefs.backgroundPadding))
             }
         }
@@ -195,7 +195,7 @@ struct SettingsView: View {
 
     private var shortcuts: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingsSection(title: "Atalhos do teclado", note: "Valem em qualquer app. Clique num atalho e aperte a nova combinação; Esc cancela, ⌫ apaga.") {
+            SettingsSection(title: L("Keyboard Shortcuts"), note: L("They work in any app. Click a shortcut and press the new combination; Esc cancels, ⌫ clears it.")) {
                 VStack(spacing: 0) {
                     ForEach(HotAction.allCases, id: \.self) { a in
                         HStack(spacing: 12) {
@@ -203,7 +203,7 @@ struct SettingsView: View {
                             Text(a.title).zenData(13, color: Zen.gray9)
                             Spacer()
                             if Hotkeys.shared.failed.contains(a) {
-                                Text("Em uso por outro app").zenData(11, color: Zen.red7)
+                                Text(L("In use by another app")).zenData(11, color: Zen.red7)
                             }
                             ShortcutField(action: a, model: model, prefs: prefs)
                         }
@@ -211,7 +211,7 @@ struct SettingsView: View {
                         .overlay(alignment: .bottom) { Rectangle().fill(Zen.gray2).frame(height: 1) }
                     }
                 }
-                Button { prefs.shortcuts = Shortcut.defaults } label: { ButtonLabel(title: "Voltar ao padrão", icon: "refresh") }
+                Button { prefs.shortcuts = Shortcut.defaults } label: { ButtonLabel(title: L("Restore Defaults"), icon: "refresh") }
                     .buttonStyle(ZenButtonStyle(kind: .subtle, height: 30))
             }
         }
@@ -219,17 +219,17 @@ struct SettingsView: View {
 
     private var quickAccess: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingsSection(title: "Posição") {
-                ZenSegmented(options: [(false, "Canto esquerdo"), (true, "Canto direito")], selection: $prefs.quickAccessRight)
+            SettingsSection(title: L("Position")) {
+                ZenSegmented(options: [(false, L("Left corner")), (true, L("Right corner"))], selection: $prefs.quickAccessRight)
             }
-            SettingsSection(title: "Fechar sozinho", note: "Com o mouse em cima, a miniatura espera.") {
-                ZenSegmented(options: [(0, "Nunca"), (5, "5 s"), (10, "10 s"), (30, "30 s"), (60, "1 min")], selection: $prefs.quickAccessAutoClose)
+            SettingsSection(title: L("Close Automatically"), note: L("While the pointer is over it, the thumbnail waits.")) {
+                ZenSegmented(options: [(0, L("Never")), (5, "5 s"), (10, "10 s"), (30, "30 s"), (60, "1 min")], selection: $prefs.quickAccessAutoClose)
             }
-            SettingsSection(title: "Na miniatura") {
+            SettingsSection(title: L("On the Thumbnail")) {
                 VStack(alignment: .leading, spacing: 8) {
-                    help("Clique duplo", "abre o editor")
-                    help("Arrastar", "leva o arquivo para outro app (Mail, Slack, Finder)")
-                    help("Copiar e Salvar", "no meio, e a miniatura sai do canto; nos cantos, fechar, anotar, fixar e apagar")
+                    help(L("Double-click"), L("opens the editor"))
+                    help(L("Drag"), L("takes the file to another app (Mail, Slack, Finder)"))
+                    help(L("Copy and Save"), L("in the middle, and the thumbnail leaves the corner; in the corners, close, annotate, pin and delete"))
                 }
             }
         }
@@ -237,17 +237,17 @@ struct SettingsView: View {
 
     private var recording: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingsSection(title: "Formato") {
-                ZenSegmented(options: [(false, "Vídeo MP4"), (true, "GIF")], selection: $prefs.recordGIF)
-                ZenSegmented(options: [(30, "30 quadros/s"), (60, "60 quadros/s")], selection: $prefs.recordFPS)
-                ZenToggle(title: "Gravar em Retina", detail: "Dobro de pixels nas telas Retina; desligado, o arquivo fica menor.", isOn: $prefs.recordRetina)
+            SettingsSection(title: L("Format")) {
+                ZenSegmented(options: [(false, L("MP4 Video")), (true, "GIF")], selection: $prefs.recordGIF)
+                ZenSegmented(options: [(30, L("30 fps")), (60, L("60 fps"))], selection: $prefs.recordFPS)
+                ZenToggle(title: L("Record at Retina resolution"), detail: L("Twice the pixels on Retina displays; when off, the file is smaller."), isOn: $prefs.recordRetina)
             }
-            SettingsSection(title: "Na gravação") {
-                ZenToggle(title: "Mostrar o cursor", isOn: $prefs.recordCursor)
-                ZenToggle(title: "Mostrar os cliques", detail: "Um anel onde o mouse clica.", isOn: $prefs.recordClicks)
-                ZenToggle(title: "Gravar o som do computador", isOn: $prefs.recordSystemAudio)
+            SettingsSection(title: L("In the Recording")) {
+                ZenToggle(title: L("Show the pointer"), isOn: $prefs.recordCursor)
+                ZenToggle(title: L("Show clicks"), detail: L("A ring where the mouse clicks."), isOn: $prefs.recordClicks)
+                ZenToggle(title: L("Record the computer's sound"), isOn: $prefs.recordSystemAudio)
                 if #available(macOS 15.0, *) {
-                    ZenToggle(title: "Gravar o microfone", isOn: $prefs.recordMicrophone)
+                    ZenToggle(title: L("Record the microphone"), isOn: $prefs.recordMicrophone)
                 }
             }
         }
@@ -255,20 +255,20 @@ struct SettingsView: View {
 
     private var screenshots: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingsSection(title: "Arquivo") {
+            SettingsSection(title: L("File")) {
                 ZenSegmented(options: [(Prefs.ImageFormat.png, "PNG"), (.jpeg, "JPEG")], selection: $prefs.imageFormat)
-                ZenToggle(title: "Salvar em 1× nas telas Retina", detail: "Metade dos pixels: arquivos menores, texto menos nítido.", isOn: $prefs.downscaleRetina)
+                ZenToggle(title: L("Save at 1× on Retina displays"), detail: L("Half the pixels: smaller files, less crisp text."), isOn: $prefs.downscaleRetina)
             }
-            SettingsSection(title: "Seleção de área") {
-                ZenToggle(title: "Congelar a tela durante a seleção", detail: "O que se mexe (vídeo, menus) fica parado até você escolher.", isOn: $prefs.freezeScreen)
-                ZenToggle(title: "Mostrar a lupa", isOn: $prefs.showMagnifier)
-                ZenToggle(title: "Mostrar a mira", isOn: $prefs.showCrosshair)
-                ZenToggle(title: "Esconder os ícones da mesa durante a captura", isOn: $prefs.hideIconsWhileCapturing)
+            SettingsSection(title: L("Area Selection")) {
+                ZenToggle(title: L("Freeze the screen while selecting"), detail: L("Anything that moves (video, menus) holds still until you choose."), isOn: $prefs.freezeScreen)
+                ZenToggle(title: L("Show the magnifier"), isOn: $prefs.showMagnifier)
+                ZenToggle(title: L("Show the crosshair"), isOn: $prefs.showCrosshair)
+                ZenToggle(title: L("Hide desktop icons while capturing"), isOn: $prefs.hideIconsWhileCapturing)
             }
-            SettingsSection(title: "Janela") {
-                ZenToggle(title: "Capturar a sombra da janela", isOn: $prefs.windowShadow)
+            SettingsSection(title: L("Window")) {
+                ZenToggle(title: L("Capture the window shadow"), isOn: $prefs.windowShadow)
             }
-            SettingsSection(title: "Timer") {
+            SettingsSection(title: L("Timer")) {
                 ZenSegmented(options: [(3, "3 s"), (5, "5 s"), (10, "10 s")], selection: $prefs.timerSeconds)
             }
         }
@@ -276,7 +276,7 @@ struct SettingsView: View {
 
     private var annotate: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingsSection(title: "Cor inicial") {
+            SettingsSection(title: L("Starting Color")) {
                 HStack(spacing: 8) {
                     ForEach(Array(Palette.colors.enumerated()), id: \.offset) { i, c in
                         Button { prefs.annotationColor = i } label: {
@@ -286,19 +286,19 @@ struct SettingsView: View {
                                 .overlay(Rectangle().strokeBorder(prefs.annotationColor == i ? Zen.gray9 : .clear, lineWidth: 1.5))
                         }
                         .buttonStyle(.plain)
-                        .help(c.name)
+                        .help(L(c.name))
                     }
                 }
             }
-            SettingsSection(title: "Espessura inicial") {
-                ZenSegmented(options: [(0, "Fina"), (1, "Média"), (2, "Grossa")], selection: $prefs.annotationWidth)
+            SettingsSection(title: L("Starting Stroke")) {
+                ZenSegmented(options: [(0, L("settings|Thin")), (1, L("settings|Medium")), (2, L("settings|Thick"))], selection: $prefs.annotationWidth)
             }
-            SettingsSection(title: "Atalhos no editor") {
+            SettingsSection(title: L("Editor Shortcuts")) {
                 VStack(alignment: .leading, spacing: 8) {
-                    help("V C A L R F O T P H N B S", "trocam de ferramenta")
-                    help("Shift", "segura retas a 45° e quadrados")
-                    help("⌘Z e ⇧⌘Z", "desfazem e refazem; ⌫ apaga o que está selecionado")
-                    help("⌘C, ⌘S, ⇧⌘S e ⌘P", "copiam, salvam, salvam como e fixam na tela")
+                    help("V C A L R F O T P H N B S", L("switch tools"))
+                    help("Shift", L("holds lines at 45° and shapes square"))
+                    help(L("⌘Z and ⇧⌘Z"), L("undo and redo; ⌫ deletes the selection"))
+                    help(L("⌘C, ⌘S, ⇧⌘S and ⌘P"), L("copy, save, save as and pin to screen"))
                 }
             }
         }
@@ -306,29 +306,29 @@ struct SettingsView: View {
 
     private var advanced: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingsSection(title: "Nome do arquivo", note: "Exemplo: \(Library.fileName(prefix: prefs.fileNamePrefix, date: Date())).\(prefs.imageFormat.ext)") {
-                TextField("Captura", text: $prefs.fileNamePrefix)
+            SettingsSection(title: L("File Name"), note: L("Example: %@", "\(Library.fileName(prefix: prefs.fileNamePrefix, date: Date())).\(prefs.imageFormat.ext)")) {
+                TextField(L("Screenshot"), text: $prefs.fileNamePrefix)
                     .textFieldStyle(.plain)
                     .font(Zen.font(14, .medium))
                     .frame(width: 280)
                     .padding(.vertical, 6)
                     .overlay(alignment: .bottom) { Rectangle().fill(Zen.gray3).frame(height: 1) }
             }
-            SettingsSection(title: "Histórico", note: "Uma cópia de cada captura fica no histórico, só neste Mac.") {
-                ZenSegmented(options: [(0, "Não guardar"), (1, "1 dia"), (7, "1 semana"), (30, "1 mês"), (-1, "Sempre")], selection: $prefs.historyDays)
+            SettingsSection(title: L("History"), note: L("A copy of each capture stays in the history, on this Mac only.")) {
+                ZenSegmented(options: [(0, L("Don't keep")), (1, L("1 day")), (7, L("1 week")), (30, L("1 month")), (-1, L("Forever"))], selection: $prefs.historyDays)
                 HStack(spacing: 12) {
-                    Button { HistoryWindow.show() } label: { ButtonLabel(title: "Abrir o histórico", icon: "history") }
+                    Button { HistoryWindow.show() } label: { ButtonLabel(title: L("Open History"), icon: "history") }
                         .buttonStyle(ZenButtonStyle(kind: .secondary, height: 30))
-                    HoldButton(title: "Limpar o histórico", kind: .danger, height: 30) {
+                    HoldButton(title: L("Clear History"), kind: .danger, height: 30) {
                         Library.shared.clear()
-                        HUD.shared.toast("Histórico limpo")
+                        HUD.shared.toast(L("History cleared"))
                     }
                 }
             }
-            SettingsSection(title: "Ajustes") {
-                HoldButton(title: "Voltar tudo ao padrão", icon: "refresh", kind: .secondary, height: 30) {
+            SettingsSection(title: L("Settings")) {
+                HoldButton(title: L("Reset All Settings"), icon: "refresh", kind: .secondary, height: 30) {
                     prefs.reset()
-                    HUD.shared.toast("Ajustes de volta ao padrão")
+                    HUD.shared.toast(L("Settings back to defaults"))
                 }
             }
         }
@@ -361,7 +361,7 @@ struct SettingsView: View {
         panel.canChooseFiles = false
         panel.canCreateDirectories = true
         panel.directoryURL = URL(fileURLWithPath: prefs.saveFolder)
-        panel.prompt = "Escolher"
+        panel.prompt = L("Choose")
         if panel.runModal() == .OK, let url = panel.url { prefs.saveFolder = url.path }
     }
 }
@@ -436,7 +436,7 @@ struct ShortcutField: View {
         Button {
             recording ? stop() : start()
         } label: {
-            Text(recording ? "Aperte o atalho…" : (prefs.shortcuts[action]?.display ?? "Sem atalho"))
+            Text(recording ? L("Press the shortcut…") : (prefs.shortcuts[action]?.display ?? L("No shortcut")))
                 .font(Zen.font(12, recording ? .bold : .medium))
                 .foregroundStyle(recording ? Color.white : (prefs.shortcuts[action] == nil ? Zen.gray4 : Zen.gray9))
                 .frame(width: 140, height: 28)

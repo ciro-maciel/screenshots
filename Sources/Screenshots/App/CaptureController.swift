@@ -42,47 +42,47 @@ final class CaptureController {
                 guard let sel = await AreaSelector.select(.area) else { return }
                 lastArea = sel.rect
                 let img = try await image(of: sel)
-                finish(img, scale: sel.screen.backingScaleFactor, source: sel.window == nil ? "Área" : "Janela")
+                finish(img, scale: sel.screen.backingScaleFactor, source: sel.window == nil ? "area" : "window")
 
             case .previousArea:
                 guard let r = lastArea else { return await performAction(.area) }
                 let img = try await ScreenGrabber.capture(rect: r)
-                finish(img, scale: Geometry.screen(for: r)?.backingScaleFactor ?? 2, source: "Área")
+                finish(img, scale: Geometry.screen(for: r)?.backingScaleFactor ?? 2, source: "area")
 
             case .fullscreen:
                 guard let screen = Geometry.mouseScreen else { return }
                 let img = try await withHiddenIcons { try await ScreenGrabber.capture(screen: screen) }
-                finish(img, scale: screen.backingScaleFactor, source: "Tela inteira")
+                finish(img, scale: screen.backingScaleFactor, source: "fullscreen")
 
             case .window:
                 guard let sel = await AreaSelector.select(.window), let w = sel.window else { return }
                 let img = try await ScreenGrabber.capture(windowID: w.id, shadow: Prefs.shared.windowShadow)
                 let scale = CGFloat(img.width) / max(w.frame.width, 1)
-                finish(withBackdrop(img, scale: scale), scale: scale.rounded(), source: "Janela")
+                finish(withBackdrop(img, scale: scale), scale: scale.rounded(), source: "window")
 
             case .scrolling:
                 guard let sel = await AreaSelector.select(.scrolling) else { return }
                 guard let img = await ScrollSession(rect: sel.rect).run() else { return }
-                finish(img, scale: sel.screen.backingScaleFactor, source: "Rolagem")
+                finish(img, scale: sel.screen.backingScaleFactor, source: "scrolling")
 
             case .text:
                 guard let sel = await AreaSelector.select(.text) else { return }
                 let img = try await image(of: sel)
                 let text = await TextRecognizer.recognize(img)
                 if text.isEmpty {
-                    HUD.shared.toast("Não achei texto nessa área.", error: true)
+                    HUD.shared.toast(L("No text found in that area."), error: true)
                 } else {
                     Stage.board.clearContents()
                     Stage.board.setString(text, forType: .string)
                     let lines = text.split(separator: "\n").count
-                    HUD.shared.toast("Texto copiado: \(lines) \(lines == 1 ? "linha" : "linhas")")
+                    HUD.shared.toast(lines == 1 ? L("Text copied: 1 line") : L("Text copied: %d lines", lines))
                 }
 
             case .recordVideo, .recordGIF:
                 guard let sel = await AreaSelector.select(.record) else { return }
                 let gif = action == .recordGIF
                 guard let url = await RecordingSession(rect: sel.rect, gif: gif).run(),
-                      let c = await Library.shared.add(movie: url, gif: gif, source: "Gravação") else { return }
+                      let c = await Library.shared.add(movie: url, gif: gif, source: "recording") else { return }
                 after(c)
 
             case .timer:
@@ -90,7 +90,7 @@ final class CaptureController {
                 lastArea = sel.rect
                 _ = await HUD.shared.countdown(Prefs.shared.timerSeconds)
                 let img = try await ScreenGrabber.capture(rect: sel.rect)
-                finish(img, scale: sel.screen.backingScaleFactor, source: "Timer")
+                finish(img, scale: sel.screen.backingScaleFactor, source: "timer")
 
             case .toggleIcons, .history:
                 break
@@ -142,7 +142,7 @@ final class CaptureController {
         if p.afterOpenEditor, c.isImage { EditorWindow.show(capture: c) }
         if p.afterPin, c.isImage, let img = Library.shared.image(c) { PinWindow.show(image: img, scale: CGFloat(c.scale)) }
         if !p.afterShowQuickAccess && !p.afterOpenEditor && !p.afterPin {
-            HUD.shared.toast(p.afterSave ? "Captura salva" : (p.afterCopy ? "Captura copiada" : "Captura no histórico"))
+            HUD.shared.toast(p.afterSave ? L("Capture saved") : (p.afterCopy ? L("Capture copied") : L("Capture kept in history")))
         }
         last = c
         Memory.trim()

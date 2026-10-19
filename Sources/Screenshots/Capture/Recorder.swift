@@ -272,13 +272,13 @@ final class RecordingSession {
             var out: URL? = ok ? recorder.url : nil
             if ok, gif {
                 let g = recorder.url.deletingPathExtension().appendingPathExtension("gif")
-                HUD.shared.toast("Montando o GIF…")
+                HUD.shared.toast(L("Building the GIF…"))
                 do {
                     try await Recorder.makeGIF(from: recorder.url, to: g)
                     try? FileManager.default.removeItem(at: recorder.url)
                     out = g
                 } catch {
-                    HUD.shared.toast("Não consegui montar o GIF.", error: true)
+                    HUD.shared.toast(L("Couldn't build the GIF."), error: true)
                     out = nil
                 }
             }
@@ -385,7 +385,7 @@ struct RecordingBar: View {
         HStack(spacing: 12) {
             GripHandle()
             if session.countdown > 0 {
-                Text("Começa em \(session.countdown)").font(Zen.font(13, .black)).foregroundStyle(Zen.gray9).monospacedDigit()
+                Text(L("Starts in %d", session.countdown)).font(Zen.font(13, .black)).foregroundStyle(Zen.gray9).monospacedDigit()
                     .frame(width: 112, alignment: .leading)
             } else {
                 Circle().fill(Zen.red7).frame(width: 8, height: 8)
@@ -395,10 +395,10 @@ struct RecordingBar: View {
                 }
                 .frame(width: 92, alignment: .leading)
             }
-            Text(session.gif ? "GIF" : "Vídeo").zenLabel(9, color: Zen.gray5)
-            Button { session.cancel() } label: { ButtonLabel(title: "Cancelar", icon: "x") }
+            Text(session.gif ? "GIF" : L("Video")).zenLabel(9, color: Zen.gray5)
+            Button { session.cancel() } label: { ButtonLabel(title: L("Cancel"), icon: "x") }
                 .buttonStyle(ZenButtonStyle(kind: .subtle, height: 30))
-            Button { session.stop() } label: { ButtonLabel(title: "Parar", icon: "player-stop", color: .white) }
+            Button { session.stop() } label: { ButtonLabel(title: L("Stop"), icon: "player-stop", color: .white) }
                 .buttonStyle(ZenButtonStyle(kind: .primary, height: 30))
                 .disabled(session.countdown > 0)
         }

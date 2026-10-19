@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 /// Scrolling capture, live: a frame marks the region, the person scrolls (or presses
-/// "Rolar sozinho") and the region is captured ten times a second and stitched.
+/// "Auto-Scroll") and the region is captured ten times a second and stitched.
 @MainActor
 @Observable
 final class ScrollSession {
@@ -26,7 +26,7 @@ final class ScrollSession {
         stitcher = Stitcher(ignoreSidePixels: Int(32 * scale))
     }
 
-    /// Runs until "Concluir" (the stitched image) or "Cancelar" (nil).
+    /// Runs until "Done" (the stitched image) or "Cancel" (nil).
     func run() async -> CGImage? {
         ScrollSession.current = self
         showChrome()
@@ -60,7 +60,7 @@ final class ScrollSession {
         if !autoScrolling, !AXIsProcessTrusted() {
             let opts = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
             AXIsProcessTrustedWithOptions(opts)
-            HUD.shared.toast("Para rolar sozinho, ligue o Screenshots em Acessibilidade e tente de novo.", error: true)
+            HUD.shared.toast(L("To scroll on its own, turn on Screenshots in Accessibility and try again."), error: true)
             return
         }
         autoScrolling.toggle()
@@ -149,17 +149,17 @@ struct ScrollPanelView: View {
             GripHandle()
             Icon(name: "arrow-autofit-height", size: 16, color: Zen.gray9)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Rolagem").zenLabel(9, color: Zen.gray5)
-                Text("\(session.height.formatted()) px").font(Zen.font(13, .black)).foregroundStyle(Zen.gray9).monospacedDigit()
+                Text(L("Scrolling")).zenLabel(9, color: Zen.gray5)
+                Text("\(session.height.formatted(.number.locale(L10n.locale))) px").font(Zen.font(13, .black)).foregroundStyle(Zen.gray9).monospacedDigit()
             }
             .frame(width: 92, alignment: .leading)
             Button { session.toggleAuto() } label: {
-                ButtonLabel(title: session.autoScrolling ? "Parar" : "Rolar sozinho", icon: session.autoScrolling ? "player-stop" : "mouse")
+                ButtonLabel(title: session.autoScrolling ? L("Stop") : L("Auto-Scroll"), icon: session.autoScrolling ? "player-stop" : "mouse")
             }
             .buttonStyle(ZenButtonStyle(kind: .secondary, height: 30))
-            Button { session.cancel() } label: { ButtonLabel(title: "Cancelar", icon: "x") }
+            Button { session.cancel() } label: { ButtonLabel(title: L("Cancel"), icon: "x") }
                 .buttonStyle(ZenButtonStyle(kind: .subtle, height: 30))
-            Button { session.finish() } label: { ButtonLabel(title: "Concluir", icon: "check", color: .white) }
+            Button { session.finish() } label: { ButtonLabel(title: L("Done"), icon: "check", color: .white) }
                 .buttonStyle(ZenButtonStyle(kind: .primary, height: 30))
         }
         .padding(.leading, 8)

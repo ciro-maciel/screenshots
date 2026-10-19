@@ -6,19 +6,19 @@ enum Tool: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .select: return "Selecionar e mover (V)"
-        case .crop: return "Recortar (C)"
-        case .arrow: return "Seta (A)"
-        case .line: return "Linha (L)"
-        case .rect: return "Retângulo (R)"
-        case .filledRect: return "Retângulo cheio (F)"
-        case .ellipse: return "Elipse (O)"
-        case .text: return "Texto (T)"
-        case .pencil: return "Lápis (P)"
-        case .highlighter: return "Marca-texto (H)"
-        case .counter: return "Contador (N)"
-        case .blur: return "Desfocar (B)"
-        case .spotlight: return "Destaque (S)"
+        case .select: return L("Select and Move (V)")
+        case .crop: return L("Crop (C)")
+        case .arrow: return L("Arrow (A)")
+        case .line: return L("Line (L)")
+        case .rect: return L("Rectangle (R)")
+        case .filledRect: return L("Filled Rectangle (F)")
+        case .ellipse: return L("Ellipse (O)")
+        case .text: return L("Text (T)")
+        case .pencil: return L("Pencil (P)")
+        case .highlighter: return L("Highlighter (H)")
+        case .counter: return L("Counter (N)")
+        case .blur: return L("Blur (B)")
+        case .spotlight: return L("Spotlight (S)")
         }
     }
     var icon: String {

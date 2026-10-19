@@ -44,7 +44,7 @@ final class Prefs {
         annotationWidth = i("annotationWidth", 1)
         windowBackground = Backdrop.Fill(rawValue: s("windowBackground", "none")) ?? .none
         backgroundPadding = i("backgroundPadding", 64)
-        fileNamePrefix = s("fileNamePrefix", "Captura")
+        fileNamePrefix = s("fileNamePrefix", L("Screenshot"))
         historyDays = i("historyDays", 30)
         if let data = store.data(forKey: "shortcuts"), let saved = try? JSONDecoder().decode([String: Shortcut].self, from: data) {
             shortcuts = Shortcut.defaults.merging(saved.compactMapKeys { HotAction(rawValue: $0) }) { _, new in new }
@@ -153,17 +153,17 @@ enum HotAction: String, CaseIterable, Codable {
 
     var title: String {
         switch self {
-        case .area: return "Capturar área"
-        case .previousArea: return "Capturar a área anterior"
-        case .fullscreen: return "Capturar a tela inteira"
-        case .window: return "Capturar janela"
-        case .scrolling: return "Capturar com rolagem"
-        case .text: return "Capturar texto"
-        case .recordVideo: return "Gravar a tela"
-        case .recordGIF: return "Gravar GIF"
-        case .timer: return "Capturar com timer"
-        case .toggleIcons: return "Esconder ícones da mesa"
-        case .history: return "Abrir o histórico"
+        case .area: return L("Capture Area")
+        case .previousArea: return L("Capture Previous Area")
+        case .fullscreen: return L("Capture Entire Screen")
+        case .window: return L("Capture Window")
+        case .scrolling: return L("Capture Scrolling Area")
+        case .text: return L("Capture Text")
+        case .recordVideo: return L("Record Screen")
+        case .recordGIF: return L("Record GIF")
+        case .timer: return L("Capture with Timer")
+        case .toggleIcons: return L("Hide Desktop Icons")
+        case .history: return L("Open History")
         }
     }
 
@@ -224,7 +224,7 @@ struct Shortcut: Codable, Equatable {
 
     static func keyName(_ code: UInt32) -> String {
         let named: [Int: String] = [
-            kVK_Return: "↩", kVK_Tab: "⇥", kVK_Space: "Espaço", kVK_Delete: "⌫", kVK_Escape: "⎋",
+            kVK_Return: "↩", kVK_Tab: "⇥", kVK_Space: L("Space"), kVK_Delete: "⌫", kVK_Escape: "⎋",
             kVK_F1: "F1", kVK_F2: "F2", kVK_F3: "F3", kVK_F4: "F4", kVK_F5: "F5", kVK_F6: "F6",
             kVK_F7: "F7", kVK_F8: "F8", kVK_F9: "F9", kVK_F10: "F10", kVK_F11: "F11", kVK_F12: "F12",
             kVK_LeftArrow: "←", kVK_RightArrow: "→", kVK_UpArrow: "↑", kVK_DownArrow: "↓",

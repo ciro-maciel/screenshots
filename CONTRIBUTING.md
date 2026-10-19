@@ -17,6 +17,7 @@ House rules:
 - Swift, AppKit and SwiftUI only, built by `swiftc`. No Xcode project, no package manager, no dependencies.
 - No network code. Screenshots never talks to the internet, and that is a promise in the README.
 - Memory is a feature: the app idles small, and a long recording or a long scrolling capture must not grow it. Keep `memtest` green.
+- Every user-facing string exists in English and Brazilian Portuguese (`Resources/en.lproj` and `Resources/pt-BR.lproj`, through `L("English text")`); a change that adds text adds both. Check it with `--screenshots` under `-AppleLanguages "(en)"` and `"(pt-BR)"`.
 - Global shortcuts go through Carbon's `RegisterEventHotKey`, which needs no Accessibility permission. Only "scroll by itself" asks for Accessibility.
 
 ## Reporting a bug

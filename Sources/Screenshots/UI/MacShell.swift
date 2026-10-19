@@ -71,7 +71,7 @@ struct MacSidebar<Menu: View, Status: View>: View {
 
             VStack(alignment: .leading, spacing: 12) {
                 status
-                Text("Versão \(MacShell.version) · por Ciro Cesar Maciel").zenData(12, color: Zen.gray5)
+                Text(L("Version %@ · by Ciro Cesar Maciel", MacShell.version)).zenData(12, color: Zen.gray5)
             }
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)

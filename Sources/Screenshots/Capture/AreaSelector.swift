@@ -100,11 +100,11 @@ final class AreaSelector {
 
     var hint: String {
         switch mode {
-        case .window: return "Clique numa janela  ·  Esc cancela"
-        case .text: return "Arraste sobre o texto  ·  Esc cancela"
-        case .scrolling: return "Arraste a parte que rola  ·  Espaço escolhe uma janela  ·  Esc cancela"
-        case .record: return "Arraste a área da gravação  ·  Clique grava a tela inteira  ·  Esc cancela"
-        default: return "Arraste uma área  ·  Clique pega a tela inteira  ·  Espaço escolhe uma janela  ·  Esc cancela"
+        case .window: return L("Click a window  ·  Esc cancels")
+        case .text: return L("Drag over the text  ·  Esc cancels")
+        case .scrolling: return L("Drag over the part that scrolls  ·  Space picks a window  ·  Esc cancels")
+        case .record: return L("Drag the area to record  ·  Click records the whole screen  ·  Esc cancels")
+        default: return L("Drag an area  ·  Click takes the whole screen  ·  Space picks a window  ·  Esc cancels")
         }
     }
 }

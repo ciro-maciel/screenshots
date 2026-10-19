@@ -342,7 +342,7 @@ final class CanvasView: NSView, NSTextFieldDelegate {
         tf.backgroundColor = NSColor.white.withAlphaComponent(0.85)
         tf.focusRingType = .none
         tf.delegate = self
-        tf.placeholderString = "Texto"
+        tf.placeholderString = L("Text")
         let top = viewPoint(an.a)
         let h = ceil(font.ascender - font.descender + font.leading) + 4
         tf.frame = CGRect(x: top.x - 2, y: top.y - h, width: max(180, Annotation.textSize(an.text, fontSize: an.fontSize).width * d.factor + 48), height: h)

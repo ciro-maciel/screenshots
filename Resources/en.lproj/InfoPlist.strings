@@ -1,0 +1,4 @@
+/* Screenshots: the permission explanations macOS shows. */
+
+"NSAppleEventsUsageDescription" = "Screenshots hides the desktop icons during captures.";
+"NSMicrophoneUsageDescription" = "Screenshots records your voice along with the screen when you turn on the microphone for a recording.";

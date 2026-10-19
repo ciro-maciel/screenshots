@@ -25,7 +25,7 @@ final class StatusMenu: NSObject, NSMenuDelegate {
             item.button?.image = Self.icon("player-stop", size: 18)
             item.button?.target = self
             item.button?.action = #selector(stopRecording)
-            item.button?.toolTip = "Parar a gravação"
+            item.button?.toolTip = L("Stop Recording")
         } else {
             item.button?.image = Self.icon("menubar", size: 18)
             item.button?.action = nil
@@ -41,11 +41,11 @@ final class StatusMenu: NSObject, NSMenuDelegate {
     func build(_ menu: NSMenu) {
         menu.removeAllItems()
         for a in [HotAction.area, .previousArea, .fullscreen, .window, .scrolling, .text] { menu.addItem(entry(a)) }
-        let timer = NSMenuItem(title: "Timer", action: nil, keyEquivalent: "")
+        let timer = NSMenuItem(title: L("Timer"), action: nil, keyEquivalent: "")
         timer.image = Self.icon("clock-hour-4")
         let sub = NSMenu()
         for s in [3, 5, 10] {
-            let i = NSMenuItem(title: "\(s) segundos", action: #selector(timerCapture(_:)), keyEquivalent: "")
+            let i = NSMenuItem(title: L("%d seconds", s), action: #selector(timerCapture(_:)), keyEquivalent: "")
             i.target = self
             i.tag = s
             i.state = Prefs.shared.timerSeconds == s ? .on : .off
@@ -57,26 +57,26 @@ final class StatusMenu: NSObject, NSMenuDelegate {
         menu.addItem(entry(.recordVideo))
         menu.addItem(entry(.recordGIF))
         menu.addItem(.separator())
-        menu.addItem(plain("Anotar uma imagem…", "pencil", #selector(openImage)))
-        let fromClipboard = plain("Anotar a imagem copiada", "photo", #selector(annotateClipboard))
+        menu.addItem(plain(L("Annotate an Image…"), "pencil", #selector(openImage)))
+        let fromClipboard = plain(L("Annotate Copied Image"), "photo", #selector(annotateClipboard))
         fromClipboard.isEnabled = Self.clipboardImage() != nil
         menu.addItem(fromClipboard)
-        let pinClipboard = plain("Fixar a imagem copiada", "pin", #selector(pinClipboard))
+        let pinClipboard = plain(L("Pin Copied Image"), "pin", #selector(pinClipboard))
         pinClipboard.isEnabled = fromClipboard.isEnabled
         menu.addItem(pinClipboard)
         menu.addItem(entry(.history))
         let icons = entry(.toggleIcons)
-        icons.title = DesktopIcons.shared.isHidden ? "Mostrar os ícones da mesa" : "Esconder os ícones da mesa"
+        icons.title = DesktopIcons.shared.isHidden ? L("Show Desktop Icons") : L("menu|Hide Desktop Icons")
         icons.image = Self.icon(DesktopIcons.shared.isHidden ? "eye" : "eye-off")
         menu.addItem(icons)
         if !PinWindow.open.isEmpty {
-            menu.addItem(plain("Fechar as imagens fixadas", "x", #selector(closePins)))
+            menu.addItem(plain(L("Close Pinned Images"), "x", #selector(closePins)))
         }
         menu.addItem(.separator())
-        let settings = plain("Ajustes…", "settings", #selector(openSettings))
+        let settings = plain(L("Settings…"), "settings", #selector(openSettings))
         settings.keyEquivalent = ","
         menu.addItem(settings)
-        menu.addItem(plain("Sair do Screenshots", "power", #selector(quit)))
+        menu.addItem(plain(L("Quit Screenshots"), "power", #selector(quit)))
     }
 
     private func entry(_ a: HotAction) -> NSMenuItem {

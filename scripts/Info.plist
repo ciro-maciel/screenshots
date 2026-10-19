@@ -3,7 +3,12 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleDevelopmentRegion</key>
-    <string>pt-BR</string>
+    <string>en</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>pt-BR</string>
+    </array>
     <key>CFBundleExecutable</key>
     <string>Screenshots</string>
     <key>CFBundleIconFile</key>
@@ -33,8 +38,8 @@
     <key>NSHumanReadableCopyright</key>
     <string>Ciro Cesar Maciel</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>O Screenshots grava a sua voz junto com a tela quando você liga o microfone na gravação.</string>
+    <string>Screenshots records your voice along with the screen when you turn on the microphone for a recording.</string>
     <key>NSAppleEventsUsageDescription</key>
-    <string>O Screenshots esconde os ícones da mesa durante as capturas.</string>
+    <string>Screenshots hides the desktop icons during captures.</string>
 </dict>
 </plist>

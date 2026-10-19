@@ -65,7 +65,7 @@ final class PinWindow: NSPanel {
         let pb = Stage.board
         pb.clearContents()
         pb.writeObjects([NSImage(cgImage: image, size: CGSize(width: CGFloat(image.width) / scale, height: CGFloat(image.height) / scale))])
-        HUD.shared.toast("Imagem copiada")
+        HUD.shared.toast(L("Image copied"))
     }
 
     func annotate() {
@@ -74,8 +74,8 @@ final class PinWindow: NSPanel {
     }
 
     func save() {
-        let c = Library.shared.add(image: image, scale: scale, source: "Fixada")
-        if let url = Library.shared.save(c) { HUD.shared.toast("Salva em \(url.deletingLastPathComponent().lastPathComponent)") }
+        let c = Library.shared.add(image: image, scale: scale, source: "pinned")
+        if let url = Library.shared.save(c) { HUD.shared.toast(L("Saved to %@", url.deletingLastPathComponent().lastPathComponent)) }
     }
 
     func originalSize() {
@@ -107,24 +107,24 @@ struct PinView: View {
                 }
                 .buttonStyle(.plain)
                 .padding(6)
-                .help("Fechar (Esc)")
+                .help(L("Close (Esc)"))
             }
         }
         .overlay(Rectangle().strokeBorder(Zen.gray3, lineWidth: 1))
         .onHover { hover = $0 }
         .contextMenu {
-            Button("Copiar") { window?.copyImage() }
-            Button("Salvar") { window?.save() }
-            Button("Anotar") { window?.annotate() }
+            Button(L("Copy")) { window?.copyImage() }
+            Button(L("Save")) { window?.save() }
+            Button(L("Annotate")) { window?.annotate() }
             Divider()
-            Menu("Opacidade") {
+            Menu(L("Opacity")) {
                 ForEach([100, 75, 50, 25], id: \.self) { v in
                     Button("\(v)%") { window?.setOpacity(CGFloat(v) / 100) }
                 }
             }
-            Button("Tamanho original") { window?.originalSize() }
+            Button(L("Original Size")) { window?.originalSize() }
             Divider()
-            Button("Fechar") { window?.closePin() }
+            Button(L("Close")) { window?.closePin() }
         }
     }
 }

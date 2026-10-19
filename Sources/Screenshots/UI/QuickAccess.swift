@@ -95,7 +95,7 @@ final class QuickAccess {
     func copy(_ id: UUID) {
         guard let c = Library.shared.item(id) else { return }
         Library.shared.copy(c)
-        HUD.shared.toast(c.isImage ? "Imagem copiada" : "Arquivo copiado")
+        HUD.shared.toast(c.isImage ? L("Image copied") : L("File copied"))
         // Done with it: the thumbnail leaves the corner.
         close(id)
     }
@@ -103,7 +103,7 @@ final class QuickAccess {
     @discardableResult
     func save(_ id: UUID) -> URL? {
         guard let c = Library.shared.item(id), let url = Library.shared.save(c) else { return nil }
-        HUD.shared.toast("Salva em \(url.deletingLastPathComponent().lastPathComponent)")
+        HUD.shared.toast(L("Saved to %@", url.deletingLastPathComponent().lastPathComponent))
         close(id)
         return url
     }
@@ -136,7 +136,7 @@ final class QuickAccess {
         // A readable name for the file that lands in the other app.
         let ext = Library.shared.url(c).pathExtension
         let named = FileManager.default.temporaryDirectory
-            .appendingPathComponent(Library.fileName(prefix: c.isImage ? Prefs.shared.fileNamePrefix : "Gravação", date: c.date))
+            .appendingPathComponent(Library.fileName(prefix: c.isImage ? Prefs.shared.fileNamePrefix : L("Recording"), date: c.date))
             .appendingPathExtension(ext)
         try? FileManager.default.removeItem(at: named)
         try? FileManager.default.copyItem(at: Library.shared.url(c), to: named)
@@ -163,7 +163,7 @@ struct QuickAccessCard: View {
                 VStack {
                     Spacer()
                     HStack {
-                        Text(c.kind == .gif ? "GIF" : "Vídeo").zenLabel(9, color: .white)
+                        Text(c.kind == .gif ? "GIF" : L("Video")).zenLabel(9, color: .white)
                             .padding(.horizontal, 8).frame(height: 20).background(Zen.gray9)
                         Spacer()
                     }
@@ -173,27 +173,27 @@ struct QuickAccessCard: View {
             if hover, let c {
                 Zen.gray9.opacity(0.62)
                 VStack(spacing: 8) {
-                    Button { qa.copy(id) } label: { Text("Copiar").frame(width: 96) }
+                    Button { qa.copy(id) } label: { Text(L("Copy")).frame(width: 96) }
                         .buttonStyle(ZenButtonStyle(kind: .secondary, height: 30))
-                    Button { qa.save(id) } label: { Text(c.savedPath == nil ? "Salvar" : "Salva").frame(width: 96) }
+                    Button { qa.save(id) } label: { Text(c.savedPath == nil ? L("Save") : L("Saved")).frame(width: 96) }
                         .buttonStyle(ZenButtonStyle(kind: .secondary, height: 30))
                 }
                 VStack {
                     HStack {
-                        corner("x", "Fechar") { qa.close(id) }
+                        corner("x", L("Close")) { qa.close(id) }
                         Spacer()
                         GripHandle(vertical: false) { qa.markMoved(id) }
                             .frame(height: 26)
                             .background(Zen.gray0)
                         Spacer()
-                        if c.isImage { corner("pencil", "Anotar") { qa.annotate(id) } }
-                        else { corner("external-link", "Abrir") { qa.annotate(id) } }
+                        if c.isImage { corner("pencil", L("Annotate")) { qa.annotate(id) } }
+                        else { corner("external-link", L("Open")) { qa.annotate(id) } }
                     }
                     Spacer()
                     HStack {
-                        if c.isImage { corner("pin", "Fixar na tela") { qa.pin(id) } }
+                        if c.isImage { corner("pin", L("Pin to screen")) { qa.pin(id) } }
                         Spacer()
-                        corner("trash", "Apagar") { qa.delete(id) }
+                        corner("trash", L("Delete")) { qa.delete(id) }
                     }
                 }
                 .padding(6)

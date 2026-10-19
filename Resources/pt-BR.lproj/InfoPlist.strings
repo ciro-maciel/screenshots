@@ -1,0 +1,4 @@
+/* Screenshots: the permission explanations macOS shows. */
+
+"NSAppleEventsUsageDescription" = "O Screenshots esconde os ícones da mesa durante as capturas.";
+"NSMicrophoneUsageDescription" = "O Screenshots grava a sua voz junto com a tela quando você liga o microfone na gravação.";

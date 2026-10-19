@@ -39,12 +39,12 @@ enum Screens {
                      sample(title: "Painel do cliente", w: 1200, h: 760),
                      sample(title: "Configurações", w: 900, h: 1400)]
         var caps: [Capture] = []
-        for (i, s) in shots.enumerated() { caps.append(Library.shared.add(image: s, scale: 2, source: ["Área", "Janela", "Rolagem"][i])) }
+        for (i, s) in shots.enumerated() { caps.append(Library.shared.add(image: s, scale: 2, source: ["area", "window", "scrolling"][i])) }
 
         // Quick Access: one card size for a tiny crop, a wide screen and a long page.
         let shapes = [("pequeno", 160, 90), ("tela", 2880, 1800), ("longo", 900, 4200), ("largo", 3000, 600)]
         for (i, sh) in shapes.enumerated() {
-            let c = Library.shared.add(image: sample(title: "Formato \(sh.0)", w: sh.1, h: sh.2), scale: 2, source: "Área")
+            let c = Library.shared.add(image: sample(title: "Formato \(sh.0)", w: sh.1, h: sh.2), scale: 2, source: "area")
             render(QuickAccessCard(id: c.id), "4\(i + 3)-quick-access-\(sh.0).png")
         }
 
@@ -105,8 +105,8 @@ enum Screens {
         render(ScrollPanelView(session: scroll), "70-scroll-panel.png")
         let rec = RecordingSession(rect: CGRect(x: 100, y: 100, width: 600, height: 400), gif: false)
         render(RecordingBar(session: rec), "71-recording-bar.png")
-        render(ToastView(text: "Imagem copiada"), "72-toast.png")
-        render(ToastView(text: "Não achei texto nessa área.", error: true), "73-toast-error.png")
+        render(ToastView(text: L("Image copied")), "72-toast.png")
+        render(ToastView(text: L("No text found in that area."), error: true), "73-toast-error.png")
         render(CountdownView(n: 3), "74-countdown.png")
 
         // The selection overlay over a sample screen, with a selection and the magnifier.

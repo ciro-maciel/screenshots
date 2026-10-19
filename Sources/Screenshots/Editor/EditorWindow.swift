@@ -85,7 +85,7 @@ final class EditorWindow: NSWindow, NSWindowDelegate {
         pb.clearContents()
         pb.writeObjects([NSImage(cgImage: img, size: CGSize(width: CGFloat(img.width) / model.scale, height: CGFloat(img.height) / model.scale))])
         if let png = try? Library.encode(img, format: .png, scale: model.scale, downscale: false) { pb.setData(png, forType: .png) }
-        HUD.shared.toast("Imagem copiada")
+        HUD.shared.toast(L("Image copied"))
     }
 
     /// Copy and Save are the end of an edit: the image goes out and the editor closes.
@@ -108,12 +108,12 @@ final class EditorWindow: NSWindow, NSWindowDelegate {
         if let id = model.captureID, let c = lib.item(id) {
             capture = lib.replace(c, with: img)
         } else {
-            capture = lib.add(image: img, scale: model.scale, source: "Editor")
+            capture = lib.add(image: img, scale: model.scale, source: "editor")
             model.captureID = capture.id
         }
         guard let url = lib.save(capture) else { return nil }
         QuickAccess.shared.refresh(capture.id)
-        HUD.shared.toast("Salva em \(url.deletingLastPathComponent().lastPathComponent)")
+        HUD.shared.toast(L("Saved to %@", url.deletingLastPathComponent().lastPathComponent))
         return url
     }
 
@@ -128,9 +128,9 @@ final class EditorWindow: NSWindow, NSWindowDelegate {
             let format: Prefs.ImageFormat = ["jpg", "jpeg"].contains(url.pathExtension.lowercased()) ? .jpeg : .png
             do {
                 try Library.encode(img, format: format, scale: self.model.scale, downscale: Prefs.shared.downscaleRetina).write(to: url)
-                HUD.shared.toast("Salva em \(url.deletingLastPathComponent().lastPathComponent)")
+                HUD.shared.toast(L("Saved to %@", url.deletingLastPathComponent().lastPathComponent))
             } catch {
-                HUD.shared.toast("Não consegui salvar.", error: true)
+                HUD.shared.toast(L("Couldn't save."), error: true)
             }
         }
     }
@@ -203,7 +203,7 @@ struct EditorView: View {
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .help(c.name)
+                    .help(L(c.name))
                 }
             }
             divider
@@ -216,18 +216,18 @@ struct EditorView: View {
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .help(["Fino", "Médio", "Grosso"][i])
+                    .help(L(["Thin", "Medium", "Thick"][i]))
                 }
             }
             Spacer(minLength: 8)
-            IconButton(icon: "arrow-back-up", help: "Desfazer (⌘Z)") { model.undo(); canvas.refresh() }
+            IconButton(icon: "arrow-back-up", help: L("Undo (⌘Z)")) { model.undo(); canvas.refresh() }
                 .disabled(!model.canUndo)
-            IconButton(icon: "arrow-forward-up", help: "Refazer (⇧⌘Z)") { model.redo(); canvas.refresh() }
+            IconButton(icon: "arrow-forward-up", help: L("Redo (⇧⌘Z)")) { model.redo(); canvas.refresh() }
                 .disabled(!model.canRedo)
             divider
-            IconButton(icon: "background", help: "Fundo", active: showBackdrop || model.state.backdrop.fill != .none) { showBackdrop.toggle() }
+            IconButton(icon: "background", help: L("Background"), active: showBackdrop || model.state.backdrop.fill != .none) { showBackdrop.toggle() }
                 .popover(isPresented: $showBackdrop, arrowEdge: .bottom) { BackdropPanel(model: model) }
-            IconButton(icon: "trash", help: "Apagar a seleção (⌫)") { model.deleteSelection(); canvas.refresh() }
+            IconButton(icon: "trash", help: L("Delete Selection (⌫)")) { model.deleteSelection(); canvas.refresh() }
                 .disabled(model.selectedID == nil)
                 .padding(.trailing, 12)
         }
@@ -243,20 +243,20 @@ struct EditorView: View {
             Text("\(Int(size.width / model.scale)) × \(Int(size.height / model.scale))")
                 .zenData(12, color: Zen.gray5).monospacedDigit()
             if model.state.crop != nil {
-                Button { model.setCrop(nil); canvas.refresh() } label: { ButtonLabel(title: "Desfazer recorte", icon: "crop") }
+                Button { model.setCrop(nil); canvas.refresh() } label: { ButtonLabel(title: L("Undo Crop"), icon: "crop") }
                     .buttonStyle(ZenButtonStyle(kind: .subtle, height: 30))
             }
             Spacer()
             dragHandle
-            Button { window?.pinImage() } label: { ButtonLabel(title: "Fixar", icon: "pin") }
+            Button { window?.pinImage() } label: { ButtonLabel(title: L("Pin"), icon: "pin") }
                 .buttonStyle(ZenButtonStyle(kind: .subtle, height: 32))
-                .help("Fixar na tela, sobre as outras janelas (⌘P)")
-            Button { window?.saveAs() } label: { ButtonLabel(title: "Salvar como", icon: "download") }
+                .help(L("Pin to screen, above other windows (⌘P)"))
+            Button { window?.saveAs() } label: { ButtonLabel(title: L("Save As"), icon: "download") }
                 .buttonStyle(ZenButtonStyle(kind: .subtle, height: 32))
-            Button { window?.copyAndClose() } label: { ButtonLabel(title: "Copiar", icon: "copy") }
+            Button { window?.copyAndClose() } label: { ButtonLabel(title: L("Copy"), icon: "copy") }
                 .buttonStyle(ZenButtonStyle(kind: .secondary, height: 32))
                 .help("⌘C")
-            Button { window?.saveAndClose() } label: { ButtonLabel(title: "Salvar", icon: "device-floppy", color: .white) }
+            Button { window?.saveAndClose() } label: { ButtonLabel(title: L("Save"), icon: "device-floppy", color: .white) }
                 .buttonStyle(ZenButtonStyle(kind: .primary, height: 32))
                 .help("⌘S")
         }
@@ -269,7 +269,7 @@ struct EditorView: View {
     private var dragHandle: some View {
         HStack(spacing: 8) {
             Icon(name: "drag-drop", size: 14, color: Zen.gray9)
-            Text("Arrastar")
+            Text(L("Drag"))
         }
         .font(Zen.font(11, .extraBold)).tracking(1).textCase(.uppercase)
         .foregroundStyle(Zen.gray9)
@@ -280,7 +280,7 @@ struct EditorView: View {
             guard let url = window?.dragFile() else { return NSItemProvider() }
             return NSItemProvider(contentsOf: url) ?? NSItemProvider()
         }
-        .help("Arraste a imagem para outro app")
+        .help(L("Drag the image into another app"))
     }
 
     private func tool(_ t: Tool) -> some View {
@@ -300,11 +300,11 @@ struct BackdropPanel: View {
     var body: some View {
         let b = model.state.backdrop
         VStack(alignment: .leading, spacing: 14) {
-            Text("Fundo").zenLabel(10, color: Zen.gray5)
+            Text(L("Background")).zenLabel(10, color: Zen.gray5)
             ZenSegmented(options: Backdrop.Fill.allCases.map { ($0, $0.title) },
                          selection: Binding(get: { b.fill }, set: { var n = b; n.fill = $0; model.setBackdrop(n) }))
             HStack(spacing: 12) {
-                Text("Margem").zenData(12, color: Zen.gray6)
+                Text(L("Padding")).zenData(12, color: Zen.gray6)
                 Slider(value: Binding(get: { Double(b.padding) }, set: { var n = b; n.padding = CGFloat($0.rounded()); model.setBackdrop(n) }),
                        in: 8...200)
                     .frame(width: 220)

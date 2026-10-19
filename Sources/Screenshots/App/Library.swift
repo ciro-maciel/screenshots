@@ -15,9 +15,25 @@ struct Capture: Codable, Identifiable, Equatable {
     var width: Int
     var height: Int
     var scale: Double           // pixels per point when captured
-    var source: String          // "Área", "Janela"… for the history list
+    var source: String          // "area", "window"…: an identifier, shown through `sourceTitle`
 
     var isImage: Bool { kind == .image }
+
+    /// The source in the interface language. Histories written before 0.3 kept the Portuguese
+    /// label itself; both spellings land on the same text.
+    var sourceTitle: String {
+        switch source {
+        case "area", "Área": return L("Area")
+        case "window", "Janela": return L("Window")
+        case "fullscreen", "Tela inteira": return L("Full Screen")
+        case "scrolling", "Rolagem": return L("Scrolling")
+        case "recording", "Gravação": return L("Recording")
+        case "timer", "Timer": return L("Timer")
+        case "editor", "Editor": return L("Editor")
+        case "pinned", "Fixada": return L("Pinned")
+        default: return source
+        }
+    }
 }
 
 @MainActor
@@ -117,7 +133,7 @@ final class Library {
         else if let saved = items[i].savedPath { dest = URL(fileURLWithPath: saved) }
         else {
             let ext = c.kind == .image ? p.imageFormat.ext : (c.kind == .gif ? "gif" : "mp4")
-            let prefix = c.kind == .image ? p.fileNamePrefix : "Gravação"
+            let prefix = c.kind == .image ? p.fileNamePrefix : L("Recording")
             dest = Library.uniqueURL(folder: folder, name: Library.fileName(prefix: prefix, date: c.date), ext: ext)
         }
         do {
@@ -130,7 +146,7 @@ final class Library {
                 try FileManager.default.copyItem(at: url(c), to: dest)
             }
         } catch {
-            HUD.shared.toast("Não consegui salvar em \(folder.lastPathComponent).", error: true)
+            HUD.shared.toast(L("Couldn't save to %@.", folder.lastPathComponent), error: true)
             return nil
         }
         items[i].savedPath = dest.path
@@ -232,8 +248,8 @@ final class Library {
 
     static func fileName(prefix: String, date: Date) -> String {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "pt_BR")
-        f.dateFormat = "yyyy-MM-dd 'às' HH.mm.ss"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = L("yyyy-MM-dd 'at' HH.mm.ss")
         return "\(prefix) \(f.string(from: date))"
     }
 

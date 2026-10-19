@@ -5,15 +5,15 @@ import CoreText
 /// color to stand out on any screenshot. The interface around it stays in the gray ramp.
 enum Palette {
     static let colors: [(name: String, color: NSColor)] = [
-        ("Vermelho", NSColor(hex: 0xF03E3E)),
-        ("Amarelo", NSColor(hex: 0xFAB005)),
-        ("Verde", NSColor(hex: 0x37B24D)),
-        ("Azul", NSColor(hex: 0x1C7ED6)),
-        ("Preto", NSColor(hex: 0x11181C)),
-        ("Branco", NSColor(hex: 0xFFFFFF)),
+        ("Red", NSColor(hex: 0xF03E3E)),
+        ("Yellow", NSColor(hex: 0xFAB005)),
+        ("Green", NSColor(hex: 0x37B24D)),
+        ("Blue", NSColor(hex: 0x1C7ED6)),
+        ("Black", NSColor(hex: 0x11181C)),
+        ("White", NSColor(hex: 0xFFFFFF)),
     ]
     static func color(_ i: Int) -> NSColor { colors[max(0, min(colors.count - 1, i))].color }
-    /// Stroke widths in points: fino, médio, grosso.
+    /// Stroke widths in points: thin, medium, thick.
     static let widths: [CGFloat] = [2, 4, 8]
     /// Text sizes in points for the same three steps.
     static let textSizes: [CGFloat] = [16, 22, 32]
@@ -113,11 +113,11 @@ struct Backdrop: Equatable {
         case none, white, gray, black, wallpaper
         var title: String {
             switch self {
-            case .none: return "Nenhum"
-            case .white: return "Branco"
-            case .gray: return "Cinza"
-            case .black: return "Preto"
-            case .wallpaper: return "Papel de parede"
+            case .none: return L("None")
+            case .white: return L("White")
+            case .gray: return L("Gray")
+            case .black: return L("Black")
+            case .wallpaper: return L("Wallpaper")
             }
         }
     }

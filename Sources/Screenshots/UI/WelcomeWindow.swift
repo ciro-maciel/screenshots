@@ -34,43 +34,43 @@ struct WelcomeView: View {
                 .padding(.bottom, 24)
             Text("Screenshots").zenLabel(10)
                 .padding(.bottom, 8)
-            Text(granted ? "Pronto para capturar" : "Falta uma permissão").zenDisplay(32)
+            Text(granted ? L("Ready to capture") : L("One permission missing")).zenDisplay(32)
                 .padding(.bottom, 10)
             Text(granted
-                 ? "O Screenshots mora na barra de menus, no ícone do S. Aperte ⌥⇧⌘4 e arraste uma área; ⌥⇧⌘6 captura com rolagem."
-                 : "Para ver a tela, o macOS pede que você ligue o Screenshots em Gravação de Tela. A imagem nunca sai deste Mac.")
+                 ? L("Screenshots lives in the menu bar, under the S icon. Press ⌥⇧⌘4 and drag over an area; ⌥⇧⌘6 captures a scrolling area.")
+                 : L("To see the screen, macOS asks you to turn on Screenshots in Screen Recording. The image never leaves this Mac."))
                 .zenBody(15).fixedSize(horizontal: false, vertical: true)
                 .padding(.bottom, 24)
             if granted {
                 VStack(alignment: .leading, spacing: 10) {
-                    row("⌥⇧⌘4", "Área")
-                    row("⌥⇧⌘3", "Tela inteira")
-                    row("⌥⇧⌘5", "Janela")
-                    row("⌥⇧⌘6", "Com rolagem")
-                    row("⌥⇧⌘7", "Texto")
-                    row("⌥⇧⌘8", "Gravar a tela")
+                    row("⌥⇧⌘4", L("Area"))
+                    row("⌥⇧⌘3", L("Full Screen"))
+                    row("⌥⇧⌘5", L("Window"))
+                    row("⌥⇧⌘6", L("With scrolling"))
+                    row("⌥⇧⌘7", L("Text"))
+                    row("⌥⇧⌘8", L("Record Screen"))
                 }
                 .padding(.bottom, 28)
                 HStack(spacing: 12) {
-                    Button { WelcomeWindow.close(); CaptureController.shared.run(.area) } label: { ButtonLabel(title: "Capturar agora", icon: "crosshair", color: .white) }
+                    Button { WelcomeWindow.close(); CaptureController.shared.run(.area) } label: { ButtonLabel(title: L("Capture Now"), icon: "crosshair", color: .white) }
                         .buttonStyle(ZenButtonStyle(kind: .primary))
-                    Button { SettingsWindow.show(.shortcuts) } label: { ButtonLabel(title: "Atalhos", icon: "keyboard") }
+                    Button { SettingsWindow.show(.shortcuts) } label: { ButtonLabel(title: L("Shortcuts"), icon: "keyboard") }
                         .buttonStyle(ZenButtonStyle(kind: .secondary))
                 }
             } else {
                 VStack(alignment: .leading, spacing: 10) {
-                    step(1, "Abra os Ajustes do Sistema pelo botão abaixo.")
-                    step(2, "Em Gravação de Tela e Áudio do Sistema, ligue o Screenshots.")
-                    step(3, "Volte aqui e reabra o app: o macOS só libera depois disso.")
+                    step(1, L("Open System Settings with the button below."))
+                    step(2, L("In Screen & System Audio Recording, turn on Screenshots."))
+                    step(3, L("Come back and reopen the app: macOS only lets it in after that."))
                 }
                 .padding(.bottom, 28)
                 HStack(spacing: 12) {
                     Button {
                         CGRequestScreenCaptureAccess()
                         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!)
-                    } label: { ButtonLabel(title: "Abrir os Ajustes", icon: "settings", color: .white) }
+                    } label: { ButtonLabel(title: L("Open System Settings"), icon: "settings", color: .white) }
                         .buttonStyle(ZenButtonStyle(kind: .primary))
-                    Button { AppDelegate.relaunch() } label: { ButtonLabel(title: "Reabrir o app", icon: "refresh") }
+                    Button { AppDelegate.relaunch() } label: { ButtonLabel(title: L("Reopen the App"), icon: "refresh") }
                         .buttonStyle(ZenButtonStyle(kind: .secondary))
                 }
             }

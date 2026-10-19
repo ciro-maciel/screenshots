@@ -17,10 +17,10 @@ enum CaptureError: LocalizedError {
     case noPermission, noDisplay, noWindow, empty
     var errorDescription: String? {
         switch self {
-        case .noPermission: return "Ligue o Screenshots em Gravação de Tela, nos Ajustes do Sistema."
-        case .noDisplay: return "Não achei a tela da captura."
-        case .noWindow: return "A janela fechou antes da captura."
-        case .empty: return "A área escolhida está vazia."
+        case .noPermission: return L("Turn on Screenshots in Screen Recording, in System Settings.")
+        case .noDisplay: return L("Couldn't find the screen for the capture.")
+        case .noWindow: return L("The window closed before the capture.")
+        case .empty: return L("The chosen area is empty.")
         }
     }
 }

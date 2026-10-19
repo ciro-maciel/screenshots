@@ -78,7 +78,7 @@ Run them from a terminal that already has Screen Recording. Never run `--e2e` di
 ## Limits
 
 - Apple Silicon and macOS 14 or newer only. Recording the microphone needs macOS 15.
-- The interface is in Portuguese for now.
+- The interface is in English and Brazilian Portuguese, following the Mac's language.
 - No cloud upload or share links, no webcam overlay, no video trimming and no dark mode.
 
 ## Contributing

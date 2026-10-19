@@ -177,7 +177,7 @@ enum MemTest {
                 peak = max(peak, footprint())
             }
             s.finish()
-            if let img = await t.value { CaptureController.shared.finish(img, scale: scale, source: "Rolagem") }
+            if let img = await t.value { CaptureController.shared.finish(img, scale: scale, source: "scrolling") }
             QuickAccess.shared.closeAll()
         }
         sw.dispose()

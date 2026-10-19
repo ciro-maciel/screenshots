@@ -323,7 +323,7 @@ struct HoldButton: View {
             let left = max(1, Int(ceil(duration * (1 - progress))))
             HStack(spacing: 8) {
                 if let icon { Icon(name: icon, size: 14, color: fg) }
-                Text(pressedAt == nil ? title : "Segure… \(left)")
+                Text(pressedAt == nil ? title : L("Hold… %d", left))
             }
             .font(Zen.font(height <= 30 ? 10 : 11, .extraBold)).tracking(height <= 30 ? 0.8 : 1).textCase(.uppercase).lineLimit(1)
             .fixedSize()
@@ -348,7 +348,7 @@ struct HoldButton: View {
         } onPressingChanged: { pressing in
             pressedAt = pressing && enabled ? Date() : nil
         }
-        .help("Segure por \(Int(duration)) segundos para confirmar. Solte para cancelar.")
+        .help(L("Hold for %d seconds to confirm. Release to cancel.", Int(duration)))
     }
 }
 
@@ -379,6 +379,6 @@ struct GripHandle: View {
         Icon(name: vertical ? "grip-vertical" : "grip-horizontal", size: 14, color: Zen.gray4)
             .frame(width: vertical ? 18 : 28, height: vertical ? 28 : 14)
             .background(WindowDragArea(onMove: onMove))
-            .help("Arraste para mover")
+            .help(L("Drag to move"))
     }
 }
