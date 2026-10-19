@@ -95,16 +95,7 @@ Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## More from Ciro Cesar Maciel
 
-I build software on my own, with a team of AI agents, and open what I can. These are six native Mac apps, all free, MIT, signed and notarized by Apple, in English and Brazilian Portuguese:
-
-| App | What it does |
-| --- | --- |
-| [Cleaner](https://github.com/ciro-maciel/cleaner) | The Mac cleaner that shows you everything before it deletes anything |
-| [Screenshots](https://github.com/ciro-maciel/screenshots) | Capture, annotate and record the screen, with nothing leaving your Mac · **this one** |
-| [Speech to Text](https://github.com/ciro-maciel/speech-to-text) | Dictation by shortcut, with Whisper running on your Mac |
-| [Assistant](https://github.com/ciro-maciel/voice-assistant) | Claude Code by voice: say its name, ask, hear the answer |
-| [Windows](https://github.com/ciro-maciel/windows) | Snap windows into place with a shortcut or by dragging them to the edge |
-| [Text to Speech](https://github.com/ciro-maciel/text-to-speech) | Select text in any app and hear it read aloud |
+I build software on my own, with a team of AI agents, and open what I can. Six native Mac apps, all free, MIT, signed and notarized by Apple, in English and Brazilian Portuguese: [Cleaner](https://github.com/ciro-maciel/cleaner), the Mac cleaner that shows you everything before it deletes anything · [Screenshots](https://github.com/ciro-maciel/screenshots), capture, annotate and record the screen, with nothing leaving your Mac (this one) · [Speech to Text](https://github.com/ciro-maciel/speech-to-text), dictation by shortcut, with Whisper running on your Mac · [Assistant](https://github.com/ciro-maciel/voice-assistant), Claude Code by voice · [Windows](https://github.com/ciro-maciel/windows), snap windows into place with a shortcut or by dragging them to the edge · [Text to Speech](https://github.com/ciro-maciel/text-to-speech), select text in any app and hear it read aloud.
 
 Beyond the apps: [free tools for the browser](https://ciromaciel.click/tools?ref=oss-screenshots), [books](https://ciromaciel.click/books?ref=oss-screenshots), and [Infrastructure](https://myinfrastructure.click/?ref=oss-screenshots), the infrastructure AI agents already know how to run.
 
