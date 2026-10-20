@@ -20,6 +20,8 @@ curl -fsSL https://blob.ciromaciel.click/tools/screenshots/install.sh | bash
 
 The script downloads the latest `.dmg`, copies Screenshots to `/Applications` and opens it.
 
+With [Homebrew](https://github.com/ciro-maciel/homebrew-tap): `brew install --cask ciro-maciel/tap/ciro-screenshots`.
+
 Prefer the disk image? [Download Screenshots-macos.dmg](https://blob.ciromaciel.click/tools/screenshots/latest/Screenshots-macos.dmg). Open it and drag Screenshots to Applications. It is signed with Developer ID and notarized by Apple, so macOS opens it with no warning.
 
 On the first run, turn on Screenshots in **System Settings → Privacy & Security → Screen & System Audio Recording**. The welcome window takes you there; once it is on, its button reopens the app, because macOS grants the permission to a fresh process only.
