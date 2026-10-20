@@ -6,7 +6,7 @@ One of [six free, open-source Mac apps](#more-from-ciro-cesar-maciel) by [Ciro C
 
 **[Watch the 1-minute video](https://youtu.be/oDOndh6FLTs)**
 
-[![As seen on Open Source Alternatives](https://www.opensourcealternatives.to/badge-osa.svg)](https://www.opensourcealternatives.to)
+[![As seen on Open Source Alternatives](https://www.opensourcealternatives.to/badge-osa.svg)](https://www.opensourcealternatives.to) [![Screenshots by Ciro Cesar Maciel | AlternativeTo](https://alternativeto.net/static/badges/badge-compact-color.svg)](https://alternativeto.net/software/screenshots-by-ciro-cesar-maciel/about/?utm_source=badge&utm_medium=referral)
 
 Capture an area, a window, the full screen or a long scrolling page, pull the text out of an image, record the screen as MP4 or GIF, then annotate, pin or drag the result into another app. It lives in the menu bar, and everything stays on your Mac: there is no network code in the app. A native Swift app for macOS 14+ on Apple Silicon.
 

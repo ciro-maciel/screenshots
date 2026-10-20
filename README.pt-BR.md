@@ -6,7 +6,7 @@ Um dos [seis apps de Mac grátis e de código aberto](#mais-de-ciro-cesar-maciel
 
 **[Veja o vídeo de 1 minuto](https://youtu.be/oDOndh6FLTs)** (em inglês)
 
-[![As seen on Open Source Alternatives](https://www.opensourcealternatives.to/badge-osa.svg)](https://www.opensourcealternatives.to)
+[![As seen on Open Source Alternatives](https://www.opensourcealternatives.to/badge-osa.svg)](https://www.opensourcealternatives.to) [![Screenshots by Ciro Cesar Maciel | AlternativeTo](https://alternativeto.net/static/badges/badge-compact-color.svg)](https://alternativeto.net/software/screenshots-by-ciro-cesar-maciel/about/?utm_source=badge&utm_medium=referral)
 
 Capture uma área, uma janela, a tela inteira ou uma página longa com rolagem, tire o texto de uma imagem, grave a tela em MP4 ou GIF e depois anote, fixe na tela ou arraste o resultado para outro app. Ele mora na barra de menus e tudo fica no seu Mac: o app não tem código de rede. App nativo em Swift para macOS 14 ou mais novo, em Apple Silicon.
 
