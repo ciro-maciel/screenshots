@@ -12,6 +12,8 @@ final class QuickAccess {
     @ObservationIgnored private var timers: [UUID: Task<Void, Never>] = [:]
     /// Thumbnails the person moved: they stay where they were put.
     @ObservationIgnored private var moved: Set<UUID> = []
+    /// The saved file of each thumbnail being dragged, by its file number when the drag began.
+    @ObservationIgnored private var dragStart: [UUID: Int] = [:]
     var hovered: UUID? { didSet { if hovered == nil { ids.forEach(scheduleClose) } else { timers[hovered!]?.cancel() } } }
     /// Bumped when a capture changes (the editor saved over it).
     private(set) var revision = 0
@@ -130,9 +132,11 @@ final class QuickAccess {
         Library.shared.delete(c)
     }
 
+    /// Always a copy, never the saved file: that one goes to the Trash once the drop lands, and
+    /// the app that took the drop may still be reading what it received.
     func dragURL(_ id: UUID) -> URL? {
         guard let c = Library.shared.item(id) else { return nil }
-        if let saved = c.savedPath, FileManager.default.fileExists(atPath: saved) { return URL(fileURLWithPath: saved) }
+        dragStart[id] = c.savedPath.flatMap(Self.fileNumber)
         // A readable name for the file that lands in the other app.
         let ext = Library.shared.url(c).pathExtension
         let named = FileManager.default.temporaryDirectory
@@ -141,6 +145,20 @@ final class QuickAccess {
         try? FileManager.default.removeItem(at: named)
         try? FileManager.default.copyItem(at: Library.shared.url(c), to: named)
         return named
+    }
+
+    /// Dropped in a folder, in Photos, in another app: the file lives there now, so the copy in
+    /// the save folder goes to the Trash and the thumbnail leaves the corner. The history keeps it.
+    func dropped(_ id: UUID) {
+        defer { close(id); dragStart[id] = nil }
+        guard let c = Library.shared.item(id), let saved = c.savedPath else { return }
+        // Dropped in the save folder over the saved file: that file is the drop now, it stays.
+        guard Self.fileNumber(saved) == dragStart[id] else { return }
+        Library.shared.unsave(c)
+    }
+
+    private static func fileNumber(_ path: String) -> Int? {
+        (try? FileManager.default.attributesOfItem(atPath: path))?[.systemFileNumber] as? Int
     }
 }
 
@@ -170,8 +188,10 @@ struct QuickAccessCard: View {
                 }
                 .padding(8)
             }
+            // Under the buttons: drags the file out, a double click annotates.
+            FileDragArea(url: { qa.dragURL(id) }, onDrop: { qa.dropped(id) }, onDoubleClick: { qa.annotate(id) })
             if hover, let c {
-                Zen.gray9.opacity(0.62)
+                Zen.gray9.opacity(0.62).allowsHitTesting(false)
                 VStack(spacing: 8) {
                     Button { qa.copy(id) } label: { Text(L("Copy")).frame(width: 96) }
                         .buttonStyle(ZenButtonStyle(kind: .secondary, height: 30))
@@ -207,11 +227,6 @@ struct QuickAccessCard: View {
             hoverState = h
             qa.hovered = h ? id : (qa.hovered == id ? nil : qa.hovered)
         }
-        .onTapGesture(count: 2) { qa.annotate(id) }
-        .onDrag {
-            guard let url = qa.dragURL(id) else { return NSItemProvider() }
-            return NSItemProvider(contentsOf: url) ?? NSItemProvider()
-        }
     }
 
     private func corner(_ icon: String, _ help: String, _ action: @escaping () -> Void) -> some View {
@@ -223,6 +238,65 @@ struct QuickAccessCard: View {
         }
         .buttonStyle(.plain)
         .help(help)
+    }
+}
+
+/// Drags the capture's file out of a thumbnail. AppKit, not SwiftUI's onDrag: only a dragging
+/// source is told how the drag ended, and a drop that landed somewhere has to clear the corner.
+struct FileDragArea: NSViewRepresentable {
+    let url: () -> URL?
+    let onDrop: () -> Void
+    let onDoubleClick: () -> Void
+
+    final class SourceView: NSView, NSDraggingSource {
+        var url: (() -> URL?)?
+        var onDrop: (() -> Void)?
+        var onDoubleClick: (() -> Void)?
+        private var downAt: NSPoint?
+
+        override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+        override func mouseDown(with event: NSEvent) {
+            if event.clickCount == 2 { downAt = nil; onDoubleClick?(); return }
+            downAt = event.locationInWindow
+        }
+
+        override func mouseDragged(with event: NSEvent) {
+            guard let start = downAt, hypot(event.locationInWindow.x - start.x, event.locationInWindow.y - start.y) > 3,
+                  let file = url?() else { return }
+            downAt = nil
+            let item = NSDraggingItem(pasteboardWriter: file as NSURL)
+            item.setDraggingFrame(bounds, contents: snapshot())
+            beginDraggingSession(with: [item], event: event, source: self)
+        }
+
+        override func mouseUp(with event: NSEvent) { downAt = nil }
+
+        func draggingSession(_ session: NSDraggingSession, sourceOperationMaskFor context: NSDraggingContext) -> NSDragOperation {
+            context == .outsideApplication ? .copy : []
+        }
+
+        func draggingSession(_ session: NSDraggingSession, endedAt screenPoint: NSPoint, operation: NSDragOperation) {
+            guard !operation.isEmpty else { return }
+            // After the session unwinds: the drop closes this very panel.
+            DispatchQueue.main.async { [onDrop] in onDrop?() }
+        }
+
+        /// The card as it looks, so the drag carries the thumbnail.
+        private func snapshot() -> NSImage {
+            guard let card = superview, let rep = card.bitmapImageRepForCachingDisplay(in: card.bounds) else { return NSImage() }
+            card.cacheDisplay(in: card.bounds, to: rep)
+            let image = NSImage(size: card.bounds.size)
+            image.addRepresentation(rep)
+            return image
+        }
+    }
+
+    func makeNSView(context: Context) -> SourceView { let v = SourceView(); updateNSView(v, context: context); return v }
+    func updateNSView(_ v: SourceView, context: Context) {
+        v.url = url
+        v.onDrop = onDrop
+        v.onDoubleClick = onDoubleClick
     }
 }
 

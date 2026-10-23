@@ -168,6 +168,14 @@ final class Library {
         }
     }
 
+    /// Sends the saved file to the Trash; the capture stays in the history.
+    func unsave(_ c: Capture) {
+        guard let i = items.firstIndex(where: { $0.id == c.id }), let saved = items[i].savedPath else { return }
+        try? FileManager.default.trashItem(at: URL(fileURLWithPath: saved), resultingItemURL: nil)
+        items[i].savedPath = nil
+        persist()
+    }
+
     /// Removes the capture from the history and its saved file, if any.
     func delete(_ c: Capture) {
         try? FileManager.default.removeItem(at: url(c))

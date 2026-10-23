@@ -451,15 +451,7 @@ enum E2E {
             check(false, "captura entrou no histórico"); return
         }
         check(true, "captura entrou no histórico")
-        let saved = c.savedPath.map { URL(fileURLWithPath: $0) }
-        check(saved.map { FileManager.default.fileExists(atPath: $0.path) } ?? false, "arquivo salvo na pasta escolhida")
-        if let saved {
-            check(saved.lastPathComponent.hasPrefix(L("Screenshot") + " ") && saved.pathExtension == "png", "nome no padrão (\(saved.lastPathComponent))")
-            if let src = CGImageSourceCreateWithURL(saved as CFURL, nil),
-               let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any] {
-                check((props[kCGImagePropertyDPIWidth] as? Double ?? 0) == 72 * Double(screen.backingScaleFactor), "PNG marcado como Retina (\(Int(72 * screen.backingScaleFactor)) dpi)")
-            }
-        }
+        check(c.savedPath == nil, "sem pedir, nada vai para a pasta")
         let pbImage = NSImage(pasteboard: Stage.board)?.cgImage(forProposedRect: nil, context: nil, hints: nil)
         check(pbImage?.width == c.width && pbImage?.height == c.height, "imagem copiada para a área de transferência")
         check(QuickAccess.shared.ids.last == c.id && QuickAccess.shared.panel(c.id)?.isVisible == true, "acesso rápido aparece")
@@ -476,7 +468,18 @@ enum E2E {
         check(!QuickAccess.shared.ids.contains(c.id), "Copiar tira a miniatura do canto")
         QuickAccess.shared.show(c)
         check(NSImage(pasteboard: Stage.board) != nil, "Copiar no acesso rápido")
-        check(QuickAccess.shared.save(c.id) == saved, "Salvar de novo grava no mesmo arquivo")
+        check(Library.shared.item(c.id)?.savedPath == nil, "Copiar não salva na pasta")
+        let saved = QuickAccess.shared.save(c.id)
+        check(saved.map { FileManager.default.fileExists(atPath: $0.path) } ?? false, "Salvar grava na pasta escolhida")
+        if let saved {
+            check(saved.lastPathComponent.hasPrefix(L("Screenshot") + " ") && saved.pathExtension == "png", "nome no padrão (\(saved.lastPathComponent))")
+            if let src = CGImageSourceCreateWithURL(saved as CFURL, nil),
+               let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any] {
+                check((props[kCGImagePropertyDPIWidth] as? Double ?? 0) == 72 * Double(screen.backingScaleFactor), "PNG marcado como Retina (\(Int(72 * screen.backingScaleFactor)) dpi)")
+            }
+        }
+        QuickAccess.shared.show(c)
+        check(saved != nil && QuickAccess.shared.save(c.id) == saved, "Salvar de novo grava no mesmo arquivo")
         check(!QuickAccess.shared.ids.contains(c.id), "Salvar tira a miniatura do canto")
         QuickAccess.shared.show(c)
         QuickAccess.shared.pin(c.id)
@@ -501,6 +504,23 @@ enum E2E {
         if let url = QuickAccess.shared.dragURL(c.id) {
             check(FileManager.default.fileExists(atPath: url.path), "arrastar entrega um arquivo")
         }
+        let c4 = CaptureController.shared.finish(page(width: 400, height: 300), scale: 2, source: "Teste")
+        let saved4 = Library.shared.save(c4)?.path ?? ""
+        let dragged4 = QuickAccess.shared.dragURL(c4.id)
+        check(dragged4 != nil && dragged4?.path != saved4, "arrasta uma cópia, não o arquivo salvo")
+        QuickAccess.shared.dropped(c4.id)
+        check(!saved4.isEmpty && !FileManager.default.fileExists(atPath: saved4) && Library.shared.item(c4.id)?.savedPath == nil
+              && Library.shared.item(c4.id) != nil && !QuickAccess.shared.ids.contains(c4.id),
+              "soltar em outro lugar manda o salvo para o Lixo e tira a miniatura; o histórico fica", saved4)
+        let c5 = CaptureController.shared.finish(page(width: 400, height: 300), scale: 2, source: "Teste")
+        let saved5 = Library.shared.save(c5)?.path ?? ""
+        _ = QuickAccess.shared.dragURL(c5.id)
+        // Finder replacing the saved file with the dropped copy: a new file in the same place.
+        try? FileManager.default.removeItem(atPath: saved5)
+        FileManager.default.createFile(atPath: saved5, contents: Data("drop".utf8))
+        QuickAccess.shared.dropped(c5.id)
+        check(!saved5.isEmpty && FileManager.default.fileExists(atPath: saved5),
+              "soltar na pasta por cima do salvo mantém o arquivo", saved5)
         QuickAccess.shared.closeAll()
 
         await front()
