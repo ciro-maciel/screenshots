@@ -19,7 +19,7 @@ final class Prefs {
         saveFolder = s("saveFolder", (NSHomeDirectory() as NSString).appendingPathComponent("Desktop"))
         afterShowQuickAccess = b("afterShowQuickAccess", true)
         afterCopy = b("afterCopy", true)
-        afterSave = b("afterSave", true)
+        afterSave = b("afterSave", false)
         afterOpenEditor = b("afterOpenEditor", false)
         afterPin = b("afterPin", false)
         playSound = b("playSound", true)
