@@ -64,7 +64,7 @@ final class PinWindow: NSPanel {
     func copyImage() {
         let pb = Stage.board
         pb.clearContents()
-        pb.writeObjects([NSImage(cgImage: image, size: CGSize(width: CGFloat(image.width) / scale, height: CGFloat(image.height) / scale))])
+        Library.put(image, scale: scale, on: pb)
         HUD.shared.toast(L("Image copied"))
     }
 

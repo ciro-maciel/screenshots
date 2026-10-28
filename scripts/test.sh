@@ -20,6 +20,7 @@ trap '[ -n "$APP" ] && kill -9 $APP 2>/dev/null || true; kill $VD 2>/dev/null ||
 read -r DISPLAY_ID < "$FIFO"
 sleep 2   # let AppKit see the new screen
 echo "virtual display $DISPLAY_ID"
-SCREENSHOTS_TEST_DISPLAY="$DISPLAY_ID" "$ROOT/dist/Screenshots.app/Contents/MacOS/Screenshots" "--$MODE" "${@:2}" &
+# MallocSpaceEfficient as the app's Info.plist sets it (LSEnvironment) when macOS opens it.
+MallocSpaceEfficient=1 SCREENSHOTS_TEST_DISPLAY="$DISPLAY_ID" "$ROOT/dist/Screenshots.app/Contents/MacOS/Screenshots" "--$MODE" "${@:2}" &
 APP=$!
 wait $APP

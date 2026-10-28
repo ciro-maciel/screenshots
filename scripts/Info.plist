@@ -27,6 +27,14 @@
     <string>__VERSION__</string>
     <key>CFBundleVersion</key>
     <string>__VERSION__</string>
+    <!-- macOS 26 and later keep every freed page for the app unless it starts with this: then
+         freed memory goes back at once. Set here, by Launch Services, because a relaunch with
+         exec to set it loses the menu bar icon. -->
+    <key>LSEnvironment</key>
+    <dict>
+        <key>MallocSpaceEfficient</key>
+        <string>1</string>
+    </dict>
     <key>LSUIElement</key>
     <true/>
     <key>LSMinimumSystemVersion</key>

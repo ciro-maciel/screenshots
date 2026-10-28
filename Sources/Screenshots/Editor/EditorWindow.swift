@@ -83,8 +83,7 @@ final class EditorWindow: NSWindow, NSWindowDelegate {
         guard let img = finished() else { return }
         let pb = Stage.board
         pb.clearContents()
-        pb.writeObjects([NSImage(cgImage: img, size: CGSize(width: CGFloat(img.width) / model.scale, height: CGFloat(img.height) / model.scale))])
-        if let png = try? Library.encode(img, format: .png, scale: model.scale, downscale: false) { pb.setData(png, forType: .png) }
+        Library.put(img, scale: model.scale, on: pb)
         HUD.shared.toast(L("Image copied"))
     }
 

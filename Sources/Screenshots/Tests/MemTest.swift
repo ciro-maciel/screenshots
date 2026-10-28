@@ -140,6 +140,16 @@ enum MemTest {
         HistoryWindow.show(); await E2E.sleep(1); HistoryWindow.current?.performClose(nil)
         report("depois de 25 miniaturas e o histórico", await settle(), limit: base + 50)
 
+        // 2b. Every capture to the clipboard, as by default: a full Retina screen each time.
+        let before = await settle()
+        Prefs.shared.afterCopy = true
+        for _ in 0..<10 {
+            let c = CaptureController.shared.finish(E2E.page(width: 5120, height: 2880), scale: 2, source: "Teste")
+            QuickAccess.shared.close(c.id)
+        }
+        Prefs.shared.afterCopy = false
+        report("10 telas 5K copiadas: o que ficou", await settle() - before, limit: 12)
+
         // 3. Editor: open, draw, export, close.
         for _ in 0..<5 {
             EditorWindow.show(image: E2E.page(width: 2880, height: 1800), scale: 2)

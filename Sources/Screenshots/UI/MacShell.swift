@@ -50,7 +50,7 @@ struct MacShellView<Sidebar: View, Content: View>: View {
     }
 }
 
-/// The app's name as its wordmark (28/900), the menu in labeled groups, and the footer: one
+/// The logotype (the bolt, the app's name and the signature), the menu in labeled groups, and the footer: one
 /// status line about what the app needs to work, then version and author.
 struct MacSidebar<Menu: View, Status: View>: View {
     let app: String
@@ -59,8 +59,8 @@ struct MacSidebar<Menu: View, Status: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Room for the window buttons, then the wordmark.
-            Text(app).zenDisplay(28).lineLimit(1)
+            // Room for the window buttons, then the logotype (14-logotipo.md), as in Cleaner.
+            Logotype(word: app, height: 54, source: "oss-screenshots-app")
                 .padding(.top, 52)
                 .padding(.horizontal, 24)
                 .padding(.bottom, 32)
@@ -223,5 +223,66 @@ struct PageHeaderLayout: SwiftUI.Layout {
         let at = f.isSide ? CGPoint(x: bounds.maxX - f.act.width, y: y + 18)
                           : CGPoint(x: bounds.maxX - f.act.width, y: y + f.head.height + 8 + f.sub.height + 24)
         subviews[2].place(at: at, proposal: .unspecified)
+    }
+}
+
+/// The line logotype (14-logotipo.md), Cleaner's view with the word as a parameter: the bolt,
+/// the app's name 800 at half the height, and "by Ciro Cesar Maciel" 700 at 0.42 of the word,
+/// never under 11. Clicking it opens ciromaciel.click.
+struct Logotype: View {
+    let word: String
+    var height: CGFloat
+    let source: String
+
+    private var wordSize: CGFloat { height / 2 }
+    private var signatureSize: CGFloat { max(11, (0.21 * height * 10).rounded() / 10) }
+
+    var body: some View {
+        Button {
+            if let url = URL(string: "https://ciromaciel.click/?ref=\(source)") { NSWorkspace.shared.open(url) }
+        } label: {
+            HStack(spacing: wordSize * 0.35) {
+                LogotypeBolt()
+                    .frame(width: height * 0.8 * 320 / 420, height: height * 0.8)
+                VStack(alignment: .leading, spacing: signatureSize * 0.35) {
+                    Text(verbatim: word)
+                        .font(Zen.font(wordSize, .extraBold)).tracking(-0.02 * wordSize)
+                        .foregroundStyle(Zen.gray9)
+                    Text(verbatim: "by Ciro Cesar Maciel")
+                        .font(Zen.font(signatureSize, .bold)).tracking(0.01 * signatureSize)
+                        .foregroundStyle(Zen.gray6)
+                }
+            }
+            .fixedSize()
+            .frame(height: height)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help(L("%@ by Ciro Cesar Maciel. More tools at ciromaciel.click", word))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "\(word) by Ciro Cesar Maciel"))
+        .accessibilityAddTraits(.isLink)
+    }
+}
+
+/// The bolt, cut from the Infrastructure's logotype (marca-raio.svg, viewBox 80 40 320 420),
+/// never redrawn: the same points, filled and stroked 16 units with round joins.
+struct LogotypeBolt: View {
+    private static let points: [CGPoint] = [
+        (144, 50), (298, 50), (307, 58), (308, 68), (265, 160), (380, 164), (388, 169), (390, 185),
+        (224, 447), (212, 449), (204, 444), (213, 294), (100, 290), (91, 284), (134, 58),
+    ].map { CGPoint(x: $0.0 - 80, y: $0.1 - 40) }
+
+    var body: some View {
+        GeometryReader { proxy in
+            let scale = min(proxy.size.width / 320, proxy.size.height / 420)
+            let path = Path { p in
+                p.addLines(Self.points.map { CGPoint(x: $0.x * scale, y: $0.y * scale) })
+                p.closeSubpath()
+            }
+            path.fill(Zen.gray9)
+            path.stroke(Zen.gray9, style: StrokeStyle(lineWidth: 16 * scale, lineCap: .round, lineJoin: .round))
+        }
+        .accessibilityHidden(true)
     }
 }

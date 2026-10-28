@@ -25,6 +25,8 @@ swiftc -O ${SDK_ARGS[@]+"${SDK_ARGS[@]}"} -target arm64-apple-macosx14.0 -parse-
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$ROOT/.build/Screenshots" "$APP/Contents/MacOS/Screenshots"
+# The symbols out of the shipped binary: half its size. Crash reports still locate each frame.
+strip -rSTx "$APP"/Contents/MacOS/*
 sed "s/__VERSION__/$VERSION/g" "$ROOT/scripts/Info.plist" > "$APP/Contents/Info.plist"
 cp -R "$ROOT/Resources/." "$APP/Contents/Resources/"
 

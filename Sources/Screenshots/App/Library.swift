@@ -158,14 +158,23 @@ final class Library {
         let pb = Stage.board
         pb.clearContents()
         if c.kind == .image, let img = image(c) {
-            let ns = NSImage(cgImage: img, size: CGSize(width: CGFloat(img.width) / CGFloat(c.scale), height: CGFloat(img.height) / CGFloat(c.scale)))
-            pb.writeObjects([ns])
-            if let png = try? Library.encode(img, format: .png, scale: CGFloat(c.scale), downscale: false) {
-                pb.setData(png, forType: .png)
-            }
+            Library.put(img, scale: CGFloat(c.scale), on: pb)
         } else {
             pb.writeObjects([(c.savedPath.map { URL(fileURLWithPath: $0) } ?? url(c)) as NSURL])
         }
+    }
+
+    /// An image on the clipboard as PNG, the few MB of the file. An NSImage there would make
+    /// macOS write an uncompressed TIFF at once and keep it in this app while it stays copied
+    /// (60 MB for a 5K screen, every copy); the TIFF is made only if an app asks for it.
+    static func put(_ image: CGImage, scale: CGFloat, on pb: NSPasteboard) {
+        guard let png = try? encode(image, format: .png, scale: scale, downscale: false) else { return }
+        let item = NSPasteboardItem()
+        item.setData(png, forType: .png)
+        let promise = TIFFPromise(png: png)
+        item.setDataProvider(promise, forTypes: [.tiff])
+        TIFFPromise.current = promise
+        pb.writeObjects([item])
     }
 
     /// Sends the saved file to the Trash; the capture stays in the history.
@@ -305,6 +314,19 @@ extension JSONEncoder {
 }
 
 /// The last few thumbnails, a hard limit (NSCache treats its limit as a hint).
+/// The TIFF of the copied image, made from its PNG when an app pastes asking for TIFF only.
+final class TIFFPromise: NSObject, NSPasteboardItemDataProvider {
+    /// The clipboard's own: held until the next copy replaces it.
+    static var current: TIFFPromise?
+    let png: Data
+    init(png: Data) { self.png = png }
+
+    func pasteboard(_ pasteboard: NSPasteboard?, item: NSPasteboardItem, provideDataForType type: NSPasteboard.PasteboardType) {
+        guard type == .tiff, let rep = NSBitmapImageRep(data: png), let tiff = rep.tiffRepresentation(using: .lzw, factor: 0) else { return }
+        item.setData(tiff, forType: .tiff)
+    }
+}
+
 final class ThumbCache {
     private let limit: Int
     private var order: [UUID] = []
