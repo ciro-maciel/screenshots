@@ -38,7 +38,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             Hotkeys.shared.registerAll()
             StatusMenu.shared.install()
             let firstRun = !UserDefaults.standard.bool(forKey: "welcomed")
-            if !ScreenGrabber.hasPermission || firstRun {
+            // Opened at login it stays in the menu bar; the welcome waits for the next manual open.
+            if (!ScreenGrabber.hasPermission || firstRun) && !LoginLaunch.isNow() {
                 UserDefaults.standard.set(true, forKey: "welcomed")
                 WelcomeWindow.show()
             }
