@@ -103,4 +103,8 @@ I build software on my own, with a team of AI agents, and open what I can. Six n
 
 Beyond the apps: [free tools for the browser](https://ciromaciel.click/tools?ref=oss-screenshots), [books](https://ciromaciel.click/books?ref=oss-screenshots), and [Infrastructure](https://myinfrastructure.click/?ref=oss-screenshots), the infrastructure AI agents already know how to run.
 
+**Curated lists.** [Nineteen awesome lists](https://go.mymarketing.click/oss-screenshots-listas) in Brazilian Portuguese, translated into 14 languages: AI at work by profession, Pix, NF-e, payments, Open Finance, WhatsApp, Brazilian APIs, MCP servers, Claude Code and more. Every link was opened before it went in.
+
+**Support.** Everything here is free and stays free. If it saved you time, [buy me a coffee](https://go.mymarketing.click/oss-screenshots-apoie): you choose the amount, by Pix or card.
+
 **Follow along.** [Follow @ciro-maciel](https://github.com/ciro-maciel) for the next open-source apps, click **Watch → Custom → Releases** above for every new version, and see how it is all made on [YouTube](https://www.youtube.com/@ciro-maciel) and at [ciromaciel.click](https://ciromaciel.click/?ref=oss-screenshots).

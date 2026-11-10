@@ -105,4 +105,8 @@ Além dos apps: [ferramentas grátis no navegador](https://ciromaciel.click/tool
 
 **Toda semana, por e-mail:** as [Cartas do Ciro](https://ciromaciel.click/?ref=oss-screenshots), o que estou construindo e aprendendo.
 
+**Listas curadas.** [Dezenove listas awesome](https://go.mymarketing.click/oss-screenshots-listas) em português, traduzidas para 14 idiomas: IA no trabalho por profissão, Pix, NF-e, pagamentos, Open Finance, WhatsApp, APIs brasileiras, servidores MCP, Claude Code e mais. Cada link foi aberto antes de entrar.
+
+**Apoie.** Tudo aqui é grátis e continua grátis. Se te poupou tempo, [pague um café](https://go.mymarketing.click/oss-screenshots-apoie): você escolhe o valor, por Pix ou cartão.
+
 **Acompanhe.** [Siga @ciro-maciel](https://github.com/ciro-maciel) para os próximos apps abertos, clique em **Watch → Custom → Releases** aqui em cima para saber de cada versão nova, e veja como tudo é feito no [YouTube](https://www.youtube.com/@ciro-maciel).
